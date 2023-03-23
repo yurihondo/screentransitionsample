@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">ScreenTransitionSample</string>
+
+    <!-- Top level destination -->
+    <string name="destination_name_apple_pie">ApplePie</string>
+    <string name="destination_name_banana_bread">BananaBread</string>
+    <string name="destination_name_cupcake">Cupcake</string>
+    <string name="destination_name_donut">Donut</string>
+    <string name="destination_name_eclair">Eclair</string>
+
 </resources>

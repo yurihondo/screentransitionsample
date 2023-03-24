@@ -34,11 +34,23 @@ android {
 }
 
 dependencies {
+    // Compose
+    val composeBom = platform(libs.composeBom)
+    implementation(composeBom)
+    implementation(libs.bundles.compose)
+    androidTestImplementation(composeBom)
+    androidTestImplementation(libs.composeUiTestJunit4)
+    debugImplementation(libs.bundles.composeDebug)
 
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.8.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    // AndroidX
+    implementation(libs.androidxCore)
+    implementation(libs.androidxActivity)
+
+    // Lifecycle
+    implementation(libs.lifecycleRuntimeKtx)
+
+    // Test
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidxJunit)
+    androidTestImplementation(libs.espressoCore)
 }

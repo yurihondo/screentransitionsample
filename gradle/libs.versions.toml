@@ -1,11 +1,12 @@
 [versions]
-compose-bom = "2023.01.00"
+compose-bom = "2023.03.00"
 core = "1.9.0"
 lifecycle = "2.6.0"
 activity = "1.6.1"
 junit = "4.13.2"
 androidx-junit = "1.1.5"
 espresso = "3.5.1"
+navigation = "2.5.3"
 
 [libraries]
 # Compose
@@ -24,6 +25,9 @@ androidxActivity = { module = "androidx.activity:activity-ktx", version.ref = "a
 
 # Lifecycle
 lifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
+
+# Navigation
+navigationCompose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
 
 # Test
 junit = { module = "junit:junit", version.ref = "junit" }

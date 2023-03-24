@@ -1,4 +1,4 @@
-package com.yurihondo.bnanabread
+package com.yurihondo.bananabread
 
 import org.junit.Test
 

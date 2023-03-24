@@ -16,7 +16,7 @@ rootProject.name = "ScreenTransitionSample"
 include ':app'
 include ':feature'
 include ':feature:applepie'
-include ':feature:bnanabread'
+include ':feature:bananabread'
 include ':feature:cupcake'
 include ':feature:donut'
 include ':feature:eclair'

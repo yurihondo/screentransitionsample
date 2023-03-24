@@ -55,6 +55,13 @@ android {
 }
 
 dependencies {
+    // Module
+    implementation(project(":feature:applepie"))
+    implementation(project(":feature:bananabread"))
+    implementation(project(":feature:cupcake"))
+    implementation(project(":feature:donut"))
+    implementation(project(":feature:eclair"))
+
     // Compose
     val composeBom = platform(libs.composeBom)
     implementation(composeBom)
@@ -69,6 +76,9 @@ dependencies {
 
     // Lifecycle
     implementation(libs.lifecycleRuntimeKtx)
+
+    // Navigation
+    implementation(libs.navigationCompose)
 
     // Test
     testImplementation(libs.junit)

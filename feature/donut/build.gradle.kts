@@ -31,6 +31,12 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.3"
+    }
 }
 
 dependencies {
@@ -48,6 +54,9 @@ dependencies {
 
     // Lifecycle
     implementation(libs.lifecycleRuntimeKtx)
+
+    // Navigation
+    implementation(libs.navigationCompose)
 
     // Test
     testImplementation(libs.junit)

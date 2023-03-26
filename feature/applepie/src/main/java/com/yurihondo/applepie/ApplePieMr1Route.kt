@@ -9,30 +9,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun ApplePieRoute(
+internal fun ApplePieMr1Route(
+    from: String,
+    onClickMoveBananaBreadMr1: () -> Unit,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
 ) {
-    ApplePieScreen(
+    ApplePieMr1Screen(
+        from = from,
+        onClickMoveBananaBreadMr1 = onClickMoveBananaBreadMr1,
         modifier = modifier,
-        onClick = onClick,
     )
 }
 
 @Composable
-private fun ApplePieScreen(
+private fun ApplePieMr1Screen(
+    from: String,
+    onClickMoveBananaBreadMr1: () -> Unit,
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = "Apple Pie")
+        Text(text = "Apple Pie MR1 from $from")
         Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = onClick) {
-            Text(text = "Move to MR1")
+        Button(onClick = onClickMoveBananaBreadMr1) {
+            Text(text = "Jump to Banana Bread MR1")
         }
     }
 }

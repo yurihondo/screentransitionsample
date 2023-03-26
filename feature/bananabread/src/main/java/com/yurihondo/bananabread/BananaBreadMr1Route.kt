@@ -1,4 +1,4 @@
-package com.yurihondo.applepie
+package com.yurihondo.bananabread
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -9,30 +9,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun ApplePieRoute(
+internal fun BananaBreadMr1Route(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
 ) {
-    ApplePieScreen(
+    BananaBreadMr1Screen(
         modifier = modifier,
-        onClick = onClick,
     )
 }
 
 @Composable
-private fun ApplePieScreen(
+internal fun BananaBreadMr1Screen(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = "Apple Pie")
-        Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = onClick) {
-            Text(text = "Move to MR1")
-        }
+        Text(text = "Banana Bread MR1")
     }
 }

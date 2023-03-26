@@ -15,6 +15,7 @@ fun NavController.navigateToCupcakeGraph(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.cupcakeGraph(
+    navigateToApplePieMr1Graph: () -> Unit,
     nestedGraphs: NavGraphBuilder.() -> Unit,
 ) {
     navigation(
@@ -22,7 +23,9 @@ fun NavGraphBuilder.cupcakeGraph(
         startDestination = cupcakeNavigationRoute,
     ) {
         composable(route = cupcakeNavigationRoute) {
-            CupcakeRoute()
+            CupcakeRoute(
+                onClick = navigateToApplePieMr1Graph
+            )
         }
         nestedGraphs()
     }

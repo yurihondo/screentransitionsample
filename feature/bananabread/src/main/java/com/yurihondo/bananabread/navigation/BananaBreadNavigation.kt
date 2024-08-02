@@ -27,7 +27,7 @@ fun NavGraphBuilder.bananaBreadGraph(
                 onClickJumpApplePirMr1 = navigateToApplePieMr1Graph
             )
         }
-        bananaBreadMr1Graph()
+        bananaBreadMr1Graph(navController)
         nestedGraphs()
     }
 }
@@ -42,6 +42,7 @@ fun NavController.navigateToBananaBreadMr1Graph(navOptions: NavOptions? = null) 
 }
 
 fun NavGraphBuilder.bananaBreadMr1Graph(
+    navController: NavController,
 ) {
     navigation(
         route = bananaBreadMr1GraphRoutePattern,
@@ -53,7 +54,9 @@ fun NavGraphBuilder.bananaBreadMr1Graph(
                 navDeepLink { uriPattern = uri_for_mr1 }
             ),
         ) {
-            BananaBreadMr1Route()
+            BananaBreadMr1Route(
+                navController = navController,
+            )
         }
     }
 }

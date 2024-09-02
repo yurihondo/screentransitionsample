@@ -5,18 +5,20 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode = RepositoriesMode.FAIL_ON_PROJECT_REPOS
     repositories {
         google()
         mavenCentral()
     }
 }
 rootProject.name = "ScreenTransitionSample"
-include ':app'
-include ':feature'
-include ':feature:applepie'
-include ':feature:bananabread'
-include ':feature:cupcake'
-include ':feature:donut'
-include ':feature:eclair'
+
+include(":app")
+include(":feature:applepie")
+include(":feature:bananabread")
+include(":feature:cupcake")
+include(":feature:donut")
+include(":feature:eclair")
+include(":core:ui")

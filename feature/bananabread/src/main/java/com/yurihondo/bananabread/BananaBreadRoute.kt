@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 internal fun BananaBreadRoute(
     onClickMoveBananaBreadMr1: () -> Unit,
-    onClickJumpApplePirMr1: () -> Unit,
+    onClickJumpApplePirMr1: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     BananaBreadScreen(
@@ -24,7 +24,7 @@ internal fun BananaBreadRoute(
 @Composable
 internal fun BananaBreadScreen(
     onClickMoveBananaBreadMr1: () -> Unit,
-    onClickJumpApplePirMr1: () -> Unit,
+    onClickJumpApplePirMr1: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -38,7 +38,7 @@ internal fun BananaBreadScreen(
             Text(text = "Move to MR1")
         }
         Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = onClickJumpApplePirMr1) {
+        Button(onClick = { onClickJumpApplePirMr1("BananaBread") }) {
             Text(text = "Jump to ApplePie MR1")
         }
     }

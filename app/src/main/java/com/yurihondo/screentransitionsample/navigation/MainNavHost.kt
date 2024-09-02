@@ -8,16 +8,17 @@ import com.yurihondo.applepie.navigation.applePieGraph
 import com.yurihondo.applepie.navigation.applePieGraphRoutePattern
 import com.yurihondo.applepie.navigation.navigateToApplePieMr1Graph
 import com.yurihondo.bananabread.navigation.bananaBreadGraph
-import com.yurihondo.bananabread.navigation.navigateToBananaBreadMr1Graph
 import com.yurihondo.cupcake.navigation.cupcakeGraph
 import com.yurihondo.donut.navigation.donutGraph
 import com.yurihondo.eclair.navigation.eclairGraph
 
 @Composable
-fun SampleNavHost(
+internal fun MainNavHost(
     navHostController: NavHostController,
     modifier: Modifier = Modifier,
 ) {
+    val mainNavigator = rememberMainNavigator(navHostController)
+
     NavHost(
         navController = navHostController,
         startDestination = applePieGraphRoutePattern,
@@ -25,15 +26,15 @@ fun SampleNavHost(
     ) {
         applePieGraph(
             navController = navHostController,
-            navigateToBananaBreadMr1Graph = navHostController::navigateToBananaBreadMr1Graph,
-        ) {}
+            navigator = mainNavigator,
+        )
         bananaBreadGraph(
             navController = navHostController,
-            navigateToApplePieMr1Graph = { navHostController.navigateToApplePieMr1Graph("BananaBread") },
-        ) {}
+            navigator = mainNavigator,
+        )
         cupcakeGraph(
-            navigateToApplePieMr1Graph = { navHostController.navigateToApplePieMr1Graph("Cupcake") },
-        ) {}
+            navigator = mainNavigator,
+        )
         donutGraph {}
         eclairGraph {}
     }

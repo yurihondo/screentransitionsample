@@ -10,18 +10,18 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 internal fun CupcakeRoute(
-    onClick: () -> Unit,
+    onNavigateToApplePieMr1: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     CupcakeScreen(
-        onClick = onClick,
+        onNavigateToApplePieMr1 = onNavigateToApplePieMr1,
         modifier = modifier,
     )
 }
 
 @Composable
 private fun CupcakeScreen(
-    onClick: () -> Unit,
+    onNavigateToApplePieMr1: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -31,7 +31,7 @@ private fun CupcakeScreen(
     ) {
         Text(text = "Cupcake")
         Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = onClick) {
+        Button(onClick = { onNavigateToApplePieMr1("CupCake") }) {
             Text(text = "Jump to ApplePie MR1")
         }
     }

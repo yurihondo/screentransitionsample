@@ -16,8 +16,7 @@ fun NavController.navigateToApplePieGraph(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.applePieGraph(
     navController: NavController,
-    navigateToBananaBreadMr1Graph: () -> Unit,
-    nestedGraphs: NavGraphBuilder.() -> Unit,
+    navigator: ApplePieNavigator,
 ) {
     navigation(
         route = applePieGraphRoutePattern,
@@ -34,9 +33,8 @@ fun NavGraphBuilder.applePieGraph(
             )
         }
         applePieMr1Graph(
-            navigateToBananaBreadMr1Graph = navigateToBananaBreadMr1Graph,
+            navigateToBananaBreadMr1Graph = navigator::navigateToBananaBreadMr1Graph,
         )
-        nestedGraphs()
     }
 }
 

@@ -14,8 +14,7 @@ fun NavController.navigateToBananaBreadGraph(navOptions: NavOptions? = null) {
 
 fun NavGraphBuilder.bananaBreadGraph(
     navController: NavController,
-    navigateToApplePieMr1Graph: () -> Unit,
-    nestedGraphs: NavGraphBuilder.() -> Unit,
+    navigator: BananaBreadNavigator,
 ) {
     navigation(
         route = bananaBreadGraphRoutePattern,
@@ -24,11 +23,10 @@ fun NavGraphBuilder.bananaBreadGraph(
         composable(route = bananaBreadNavigationRoute) {
             BananaBreadRoute(
                 onClickMoveBananaBreadMr1 = navController::navigateToBananaBreadMr1Graph,
-                onClickJumpApplePirMr1 = navigateToApplePieMr1Graph
+                onClickJumpApplePirMr1 = navigator::navigateToApplePieMr1Graph
             )
         }
         bananaBreadMr1Graph()
-        nestedGraphs()
     }
 }
 

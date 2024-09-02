@@ -9,7 +9,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
-import com.yurihondo.screentransitionsample.navigation.SampleNavHost
+import com.yurihondo.screentransitionsample.navigation.MainNavHost
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,7 +35,7 @@ internal fun App(
             contentColor = MaterialTheme.colorScheme.onBackground,
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
         ) { paddingValues ->
-            SampleNavHost(
+            MainNavHost(
                 navHostController = appState.navHostController,
                 modifier = Modifier.padding(paddingValues)
             )

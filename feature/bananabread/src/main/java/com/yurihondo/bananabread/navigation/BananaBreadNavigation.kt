@@ -5,10 +5,10 @@ import androidx.navigation.compose.composable
 import com.yurihondo.bananabread.BananaBreadMr1Route
 import com.yurihondo.bananabread.BananaBreadRoute
 
-const val bananaBreadNavigationRoute = "banana_bread_route"
-const val bananaBreadGraphRoutePattern = "banana_bread_graph"
+internal const val bananaBreadNavigationRoute = "banana_bread_route"
+internal const val bananaBreadGraphRoutePattern = "banana_bread_graph"
 
-fun NavController.navigateToBananaBreadGraph(navOptions: NavOptions? = null) {
+internal fun NavController.navigateToBananaBreadGraph(navOptions: NavOptions? = null) {
     this.navigate(bananaBreadGraphRoutePattern, navOptions)
 }
 

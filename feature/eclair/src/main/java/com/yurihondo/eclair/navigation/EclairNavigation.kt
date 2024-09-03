@@ -10,7 +10,7 @@ import com.yurihondo.eclair.EclairRoute
 const val eclairNavigationRoute = "eclair_route"
 const val eclairGraphRoutePattern = "eclair_graph"
 
-fun NavController.navigateToEclairGraph(navOptions: NavOptions? = null) {
+internal fun NavController.navigateToEclairGraph(navOptions: NavOptions? = null) {
     this.navigate(eclairGraphRoutePattern, navOptions)
 }
 

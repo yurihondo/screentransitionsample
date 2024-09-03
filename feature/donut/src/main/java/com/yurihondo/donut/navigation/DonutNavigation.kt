@@ -10,7 +10,7 @@ import com.yurihondo.donut.DonutRoute
 const val donutNavigationRoute = "donut_route"
 const val donutGraphRoutePattern = "donut_graph"
 
-fun NavController.navigateToDonutGraph(navOptions: NavOptions ? = null) {
+internal fun NavController.navigateToDonutGraph(navOptions: NavOptions ? = null) {
     this.navigate(donutGraphRoutePattern, navOptions)
 }
 

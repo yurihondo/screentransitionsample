@@ -13,8 +13,10 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
 rootProject.name = "ScreenTransitionSample"
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
 include(":feature:applepie")
 include(":feature:bananabread")

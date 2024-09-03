@@ -9,8 +9,7 @@ const val applePieNavigationRoute = "apple_pie_route"
 const val applePieGraphRoutePattern = "apple_pie_graph"
 const val uri_for_root = "https://com.yurihondo.applepie"
 
-
-fun NavController.navigateToApplePieGraph(navOptions: NavOptions? = null) {
+internal fun NavController.navigateToApplePieGraph(navOptions: NavOptions? = null) {
     this.navigate(applePieGraphRoutePattern, navOptions)
 }
 

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
@@ -16,7 +15,6 @@ import com.yurihondo.screentransitionsample.navigation.MainNavHost
 internal fun App(
     appState: AppState = rememberAppState(
         navHostController = rememberNavController(),
-        coroutineScope = rememberCoroutineScope()
     )
 ) {
     Surface(
@@ -27,7 +25,7 @@ internal fun App(
             bottomBar = {
                 SampleBottomBar(
                     destinations = appState.topLevelDestinations,
-                    onClickItem = appState::navigateToTopLevelDestination,
+                    onClickItem = appState::onSelectTopLevelDestination,
                     currentDestination = appState.currentTopLevelDestination,
                 )
             },

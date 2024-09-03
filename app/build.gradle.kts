@@ -56,11 +56,12 @@ android {
 
 dependencies {
     // Module
-    implementation(project(":feature:applepie"))
-    implementation(project(":feature:bananabread"))
-    implementation(project(":feature:cupcake"))
-    implementation(project(":feature:donut"))
-    implementation(project(":feature:eclair"))
+    implementation(projects.core.ui)
+    implementation(projects.feature.applepie)
+    implementation(projects.feature.bananabread)
+    implementation(projects.feature.cupcake)
+    implementation(projects.feature.donut)
+    implementation(projects.feature.eclair)
 
     // Compose
     val composeBom = platform(libs.composeBom)

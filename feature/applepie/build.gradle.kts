@@ -40,6 +40,9 @@ android {
 }
 
 dependencies {
+    //Modules
+    implementation(project(":core:ui"))
+
     // Compose
     val composeBom = platform(libs.composeBom)
     implementation(composeBom)

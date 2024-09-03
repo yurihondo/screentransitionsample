@@ -18,6 +18,10 @@ import com.yurihondo.screentransitionsample.navigation.TopLevelDestination
 internal class AppState(
     val navHostController: NavHostController,
 ) {
+
+    companion object {
+    }
+
     val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
 
     var currentTopLevelDestination by mutableStateOf(TopLevelDestination.APPLE_PIE)

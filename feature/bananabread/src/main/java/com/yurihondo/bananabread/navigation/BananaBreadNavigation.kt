@@ -35,7 +35,6 @@ const val bananaBreadMr1GraphRoutePattern = "banana_bread_mr1_graph"
 const val uri_for_mr1 = "https://com.yurihondo.bananabread.mr1"
 
 fun NavController.navigateToBananaBreadMr1Graph(navOptions: NavOptions? = null) {
-    this.navigateToBananaBreadGraph()
     this.navigate(bananaBreadMr1GraphRoutePattern, navOptions)
 }
 

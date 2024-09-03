@@ -9,6 +9,6 @@ class AppleGraphSpec : GraphSpec {
     override val startRoute: String = applePieNavigationRoute
 
     override fun NavController.navigate(navOptions: NavOptions?) {
-        navigateToApplePieGraph()
+        navigateToApplePieGraph(navOptions)
     }
 }

@@ -1,5 +1,6 @@
 package com.yurihondo.screentransitionsample.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -21,6 +22,7 @@ import com.yurihondo.screentransitionsample.navigation.TopLevelDestinationBehavi
 import com.yurihondo.screentransitionsample.navigation.TopLevelDestinationBehavior.HIDE
 import com.yurihondo.screentransitionsample.navigation.TopLevelDestinationBehavior.SAME_AS_PARENT
 
+@SuppressLint("RestrictedApi")
 @Stable
 internal class AppState(
     val navHostController: NavHostController,

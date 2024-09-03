@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
 import com.yurihondo.applepie.ApplePieMr1Route
@@ -64,12 +65,15 @@ fun NavGraphBuilder.applePieMr1Graph(
     ) {
         composable(
             route = applePieMr1NavigationRoute,
+            arguments = listOf(
+                navArgument(applePieMr1NavigationParamFrom) { defaultValue = "unknown" }
+            ),
             deepLinks = listOf(
-                navDeepLink { uriPattern = "$uri_for_mr1/{$applePieMr1NavigationParamFrom}" }
+                navDeepLink { uriPattern = "$uri_for_mr1?$applePieMr1NavigationParamFrom={$applePieMr1NavigationParamFrom}" }
             ),
         ) { entry ->
             ApplePieMr1Route(
-                from = entry.arguments?.getString(applePieMr1NavigationParamFrom) ?: "unknown",
+                from = entry.arguments?.getString(applePieMr1NavigationParamFrom)!!,
                 onClickMoveBananaBreadMr1 = navigateToBananaBreadMr1Graph
             )
         }

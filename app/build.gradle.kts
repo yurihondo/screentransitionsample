@@ -57,6 +57,7 @@ android {
 dependencies {
     // Module
     implementation(projects.core.ui)
+    implementation(projects.core.common)
     implementation(projects.feature.applepie)
     implementation(projects.feature.bananabread)
     implementation(projects.feature.cupcake)

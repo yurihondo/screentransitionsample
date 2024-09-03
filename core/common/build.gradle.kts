@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.yurihondo.core.ui"
+    namespace = "com.yurihondo.screentransitionsample.core.common"
     compileSdk = 34
 
     defaultConfig {
@@ -32,6 +32,7 @@ android {
 }
 
 dependencies {
-    // Navigation
-    implementation(libs.navigationCompose)
+    // Androidx
+    implementation(libs.androidxCore)
+    implementation(libs.androidxActivity)
 }

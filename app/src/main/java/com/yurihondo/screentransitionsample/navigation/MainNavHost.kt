@@ -1,5 +1,6 @@
 package com.yurihondo.screentransitionsample.navigation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -15,6 +16,7 @@ import com.yurihondo.eclair.navigation.eclairGraph
 @Composable
 internal fun MainNavHost(
     navHostController: NavHostController,
+    onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val mainNavigator = rememberMainNavigator(navHostController)
@@ -38,4 +40,8 @@ internal fun MainNavHost(
         donutGraph {}
         eclairGraph {}
     }
+
+    // Have to set our own BackHandler after NavHost to override the BackHandler inside DestinationsNavHost
+    // https://issuetracker.google.com/issues/308445371
+    BackHandler(onBack = onBack)
 }

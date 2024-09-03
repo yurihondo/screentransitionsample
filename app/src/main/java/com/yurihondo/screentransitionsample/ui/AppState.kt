@@ -10,6 +10,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.yurihondo.screentransitionsample.core.common.extension.findActivity
+import com.yurihondo.screentransitionsample.navigation.LifoUniqueQueue
 import com.yurihondo.screentransitionsample.navigation.TopLevelDestination
 
 @Stable
@@ -21,9 +23,29 @@ internal class AppState(
     var currentTopLevelDestination by mutableStateOf(TopLevelDestination.APPLE_PIE)
         private set
 
+    private val topLevelDestinationBackQueue: LifoUniqueQueue<TopLevelDestination> = LifoUniqueQueue()
+
+    init {
+        topLevelDestinationBackQueue.add(currentTopLevelDestination)
+    }
+
     fun onSelectTopLevelDestination(destination: TopLevelDestination) {
         navigateToTopLevelDestination(destination)
+        topLevelDestinationBackQueue.add(destination)
         currentTopLevelDestination = destination
+    }
+
+    fun onBack() {
+        if (isInStartRoute()) {
+            // Remove current BackStack from queue and check next one.
+            topLevelDestinationBackQueue.remove()
+            topLevelDestinationBackQueue.element()?.let { dest ->
+                navigateToTopLevelDestination(dest)
+                currentTopLevelDestination = dest
+            } ?: navHostController.context.findActivity().finish()
+        } else {
+            navHostController.popBackStack()
+        }
     }
 
     private fun navigateToTopLevelDestination(destination: TopLevelDestination) {
@@ -37,6 +59,11 @@ internal class AppState(
             }
             navHostController.navigate(option)
         }
+    }
+
+    private fun isInStartRoute(): Boolean {
+        val startRouteOnCurrentDest = currentTopLevelDestination.graph.startRoute
+        return navHostController.currentBackStackEntry?.destination?.route == startRouteOnCurrentDest
     }
 }
 

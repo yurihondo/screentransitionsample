@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.navigation.compose.rememberNavController
 import com.yurihondo.screentransitionsample.navigation.MainNavHost
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun App(
     appState: AppState = rememberAppState(
@@ -35,7 +34,8 @@ internal fun App(
         ) { paddingValues ->
             MainNavHost(
                 navHostController = appState.navHostController,
-                modifier = Modifier.padding(paddingValues)
+                onBack = appState::onBack,
+                modifier = Modifier.padding(paddingValues),
             )
         }
     }

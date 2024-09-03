@@ -3,7 +3,9 @@ package com.yurihondo.screentransitionsample.ui
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +28,7 @@ internal fun App(
                     destinations = appState.topLevelDestinations,
                     onClickItem = appState::onSelectTopLevelDestination,
                     currentDestination = appState.currentTopLevelDestination,
+                    isVisible = appState.shouldShowNavigation,
                 )
             },
             containerColor = Color.Transparent,

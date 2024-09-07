@@ -6,6 +6,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -98,6 +99,13 @@ internal class AppState(
         } else {
             navHostController.popBackStack()
         }
+    }
+
+    fun onHandleDeepLinksIntent() {
+        // When launching a screen via DeepLinks, the Tabs will be hidden uniformly.
+        // This is because it is difficult to recreate the Tab selection state and screen stack based on the screen triggered by the DeepLink.
+        // Therefore, the Tabs are intentionally hidden to avoid indicating which Tab the screen was opened from.
+        hideNavigation()
     }
 
     private fun navigateToTopLevelDestination(destination: TopLevelDestination) {

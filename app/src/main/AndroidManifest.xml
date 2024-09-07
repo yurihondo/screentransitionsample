@@ -11,16 +11,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScreenTransitionSample"
         tools:targetApi="31">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.ScreenTransitionSample">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -31,17 +32,21 @@
                     android:host="com.yurihondo.applepie.mr1"
                     android:scheme="https" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".DeepLinksActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="com.yurihondo.bananabread.mr1"
-                    android:scheme="https" />
+                <data android:scheme="com.yurihondo" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

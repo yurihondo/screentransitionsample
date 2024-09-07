@@ -39,6 +39,7 @@ internal fun App(
                 navHostController = appState.navHostController,
                 onBack = appState::onBack,
                 modifier = Modifier.padding(paddingValues),
+                onHandleIntentForDeepLink = appState::onHandleDeepLinksIntent,
             )
         }
     }

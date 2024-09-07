@@ -11,7 +11,7 @@ import com.yurihondo.cupcake.navigation.CupcakeNavigator
 
 internal class MainNavigator(
     private val navController: NavController,
-): ApplePieNavigator, BananaBreadNavigator, CupcakeNavigator {
+): ApplePieNavigator, BananaBreadNavigator, CupcakeNavigator, DeepLinksNavigator {
 
     override fun navigateToBananaBreadMr1Graph() {
         navController.navigateToBananaBreadMr1Graph()

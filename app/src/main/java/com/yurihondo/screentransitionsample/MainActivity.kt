@@ -12,9 +12,10 @@ import com.yurihondo.screentransitionsample.ui.theme.ScreenTransitionSampleTheme
 class MainActivity : ComponentActivity() {
 
     companion object {
-        fun createIntentToShowBananaBreadMr1(activityContext: Context): Intent {
+        fun createIntentToShowBananaBreadMr1(activityContext: Context, clearStack: Boolean): Intent {
             return Intent(activityContext, MainActivity::class.java).apply {
                 action = DeepLinksNavigator.ACTION_SHOW_BANANA_BREAD_MR1
+                putExtra(DeepLinksNavigator.KEY_CLEAR_STACK, clearStack)
             }
         }
     }

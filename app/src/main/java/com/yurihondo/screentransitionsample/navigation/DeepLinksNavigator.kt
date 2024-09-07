@@ -7,13 +7,17 @@ internal interface DeepLinksNavigator {
     companion object {
         // actions
         const val ACTION_SHOW_BANANA_BREAD_MR1 = "com.yurihondo.screentransitionsample.action.SHOW_BANANA_BREAD_MR1"
+
+        // keys
+        const val KEY_CLEAR_STACK = "clear_stack"
     }
 
     fun handleDeepLinksIfNeeded(intent: Intent): Boolean {
         var consumed = true
         when (intent.action) {
             ACTION_SHOW_BANANA_BREAD_MR1 -> {
-                navigateToBananaBreadMr1Graph()
+                val clearStack = intent.getBooleanExtra(KEY_CLEAR_STACK, false)
+                navigateToBananaBreadMr1GraphFromExternal(clearStack)
             }
             else -> {
                 consumed = false
@@ -22,5 +26,5 @@ internal interface DeepLinksNavigator {
         return consumed
     }
 
-    fun navigateToBananaBreadMr1Graph()
+    fun navigateToBananaBreadMr1GraphFromExternal(clearStack: Boolean)
 }

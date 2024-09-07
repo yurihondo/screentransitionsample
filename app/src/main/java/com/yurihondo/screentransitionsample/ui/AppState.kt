@@ -1,6 +1,7 @@
 package com.yurihondo.screentransitionsample.ui
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -97,7 +98,9 @@ internal class AppState(
                 currentTopLevelDestination = dest
             } ?: navHostController.context.findActivity().finish()
         } else {
-            navHostController.popBackStack()
+            if(navHostController.popBackStack().not()) {
+                navHostController.context.findActivity().finish()
+            }
         }
     }
 

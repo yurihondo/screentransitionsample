@@ -7,30 +7,41 @@ import com.yurihondo.cupcake.navigation.CupcakeGraphSpec
 import com.yurihondo.donut.navigation.DonutGraphSpec
 import com.yurihondo.eclair.navigation.EclairGraphSpec
 import com.yurihondo.screentransitionsample.R
+import java.lang.UnsupportedOperationException
 
-enum class TopLevelDestination(
+internal enum class TopLevelDestination(
     val titleTextId: Int,
-    val graph: GraphSpec
+    val graph: () -> GraphSpec
 ) {
+    UNKNOWN(
+        titleTextId = -1,
+        graph = { throw UnsupportedOperationException("Unknown destination") },
+    ),
     APPLE_PIE(
         titleTextId = R.string.destination_name_apple_pie,
-        graph = AppleGraphSpec(),
+        graph = { AppleGraphSpec() },
     ),
 
     BANANA_BREAD(
         titleTextId = R.string.destination_name_banana_bread,
-        graph = BananaBreadGraphSpec(),
+        graph = { BananaBreadGraphSpec() },
     ),
     CUPCAKE(
         titleTextId = R.string.destination_name_cupcake,
-        graph = CupcakeGraphSpec()
+        graph = { CupcakeGraphSpec() },
     ),
     DONUT(
         titleTextId = R.string.destination_name_donut,
-        graph = DonutGraphSpec()
+        graph = { DonutGraphSpec() },
     ),
     ECLAIR(
         titleTextId = R.string.destination_name_eclair,
-        graph = EclairGraphSpec(),
+        graph = { EclairGraphSpec() },
     );
+
+    companion object {
+        fun getAvailableDestinations(): List<TopLevelDestination> {
+            return TopLevelDestination.entries.filter { it != UNKNOWN }
+        }
+    }
 }

@@ -1,12 +1,12 @@
 package com.yurihondo.screentransitionsample.ui
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavBackStackEntry
@@ -27,29 +27,33 @@ import com.yurihondo.screentransitionsample.navigation.TopLevelDestinationBehavi
 @SuppressLint("RestrictedApi")
 @Stable
 internal class AppState(
+    private val coreData: AppStateCoreData,
     val navHostController: NavHostController,
 ) {
 
     companion object {
+        private val DEFAULT_DESTINATION = TopLevelDestination.APPLE_PIE
+
         private val TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP = mapOf(
             applePieMr1NavigationRoute to HIDE,
             bananaBreadMr1NavigationRoute to SAME_AS_PARENT,
         )
     }
 
-    val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
+    val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.getAvailableDestinations()
 
-    var currentTopLevelDestination by mutableStateOf(TopLevelDestination.APPLE_PIE)
-        private set
+    val currentTopLevelDestination
+        get() = coreData.currentTopLevelDestination
 
     var shouldShowNavigation by mutableStateOf(true)
         private set
 
-    private val topLevelDestinationBackQueue: LifoUniqueQueue<TopLevelDestination> =
-        LifoUniqueQueue()
-
     init {
-        topLevelDestinationBackQueue.add(currentTopLevelDestination)
+        if (coreData.currentTopLevelDestination == TopLevelDestination.UNKNOWN) {
+            coreData.currentTopLevelDestination = DEFAULT_DESTINATION
+        }
+
+        coreData.topLevelDestinationBackQueue.add(currentTopLevelDestination)
 
         navHostController.addOnDestinationChangedListener { navController, dest, _ ->
             val behaviorType = dest.route?.let { route ->
@@ -85,20 +89,20 @@ internal class AppState(
 
     fun onSelectTopLevelDestination(destination: TopLevelDestination) {
         navigateToTopLevelDestination(destination)
-        topLevelDestinationBackQueue.add(destination)
-        currentTopLevelDestination = destination
+        coreData.topLevelDestinationBackQueue.add(destination)
+        coreData.currentTopLevelDestination = destination
     }
 
     fun onBack() {
         if (isInStartRoute()) {
             // Remove current BackStack from queue and check next one.
-            topLevelDestinationBackQueue.remove()
-            topLevelDestinationBackQueue.element()?.let { dest ->
+            coreData. topLevelDestinationBackQueue.remove()
+            coreData.topLevelDestinationBackQueue.element()?.let { dest ->
                 navigateToTopLevelDestination(dest)
-                currentTopLevelDestination = dest
+                coreData.currentTopLevelDestination = dest
             } ?: navHostController.context.findActivity().finish()
         } else {
-            if(navHostController.popBackStack().not()) {
+            if (navHostController.popBackStack().not()) {
                 navHostController.context.findActivity().finish()
             }
         }
@@ -112,7 +116,7 @@ internal class AppState(
     }
 
     private fun navigateToTopLevelDestination(destination: TopLevelDestination) {
-        with(destination.graph) {
+        with(destination.graph()) {
             val option = navOptions {
                 popUpTo(navHostController.graph.findStartDestination().id) {
                     saveState = true
@@ -125,7 +129,7 @@ internal class AppState(
     }
 
     private fun isInStartRoute(): Boolean {
-        val startRouteOnCurrentDest = currentTopLevelDestination.graph.startRoute
+        val startRouteOnCurrentDest = currentTopLevelDestination.graph().startRoute
         return navHostController.currentBackStackEntry?.destination?.route == startRouteOnCurrentDest
     }
 
@@ -165,11 +169,47 @@ internal class AppState(
     }
 }
 
+@Stable
+internal class AppStateCoreData(
+    currentTopLevelDestination: TopLevelDestination = TopLevelDestination.UNKNOWN,
+    val topLevelDestinationBackQueue: LifoUniqueQueue<TopLevelDestination> = LifoUniqueQueue(),
+) {
+    var currentTopLevelDestination: TopLevelDestination by mutableStateOf(currentTopLevelDestination)
+
+    companion object {
+        private const val KEY_CURRENT_TOP_LEVEL_DESTINATION = "key_current_top_level_destination"
+        private const val KEY_TOP_LEVEL_DESTINATION_BACK_QUEUE =
+            "key_top_level_destination_back_queue"
+
+        @Suppress("UNCHECKED_CAST")
+        val Saver = mapSaver(
+            save = {
+                mapOf(
+                    KEY_CURRENT_TOP_LEVEL_DESTINATION to it.currentTopLevelDestination,
+                    KEY_TOP_LEVEL_DESTINATION_BACK_QUEUE to it.topLevelDestinationBackQueue.toSet(),
+                )
+            },
+            restore = {
+                AppStateCoreData(
+                    currentTopLevelDestination = it[KEY_CURRENT_TOP_LEVEL_DESTINATION] as TopLevelDestination,
+                    topLevelDestinationBackQueue = LifoUniqueQueue(
+                        it[KEY_TOP_LEVEL_DESTINATION_BACK_QUEUE] as Set<TopLevelDestination>
+                    ),
+                )
+            }
+        )
+    }
+}
+
 @Composable
 internal fun rememberAppState(
     navHostController: NavHostController = rememberNavController(),
 ): AppState {
+    val coreData = rememberSaveable(saver = AppStateCoreData.Saver) { AppStateCoreData() }
     return remember(navHostController) {
-        AppState(navHostController)
+        AppState(
+            coreData = coreData,
+            navHostController = navHostController,
+        )
     }
 }

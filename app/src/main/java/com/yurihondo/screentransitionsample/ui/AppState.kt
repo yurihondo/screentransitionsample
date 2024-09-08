@@ -10,6 +10,7 @@ import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraph
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.ComposeNavigator.Destination
@@ -40,7 +41,8 @@ internal class AppState(
         )
     }
 
-    val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.getAvailableDestinations()
+    val topLevelDestinations: List<TopLevelDestination> =
+        TopLevelDestination.getAvailableDestinations()
 
     val currentTopLevelDestination
         get() = coreData.currentTopLevelDestination
@@ -96,7 +98,7 @@ internal class AppState(
     fun onBack() {
         if (isInStartRoute()) {
             // Remove current BackStack from queue and check next one.
-            coreData. topLevelDestinationBackQueue.remove()
+            coreData.topLevelDestinationBackQueue.remove()
             coreData.topLevelDestinationBackQueue.element()?.let { dest ->
                 navigateToTopLevelDestination(dest)
                 coreData.currentTopLevelDestination = dest
@@ -124,13 +126,17 @@ internal class AppState(
                 launchSingleTop = true
                 restoreState = true
             }
-            navHostController.navigate(option)
+            navHostController.navigateToGraph(option)
         }
     }
 
     private fun isInStartRoute(): Boolean {
-        val startRouteOnCurrentDest = currentTopLevelDestination.graph().startRoute
-        return navHostController.currentBackStackEntry?.destination?.route == startRouteOnCurrentDest
+        val navGraph = navHostController.currentBackStack.value
+            .map { it.destination }
+            .filterIsInstance<NavGraph>()
+            .lastOrNull() ?: return false
+
+        return navHostController.currentBackStackEntry?.destination?.route == navGraph.startDestinationRoute
     }
 
     private fun hideNavigation() {

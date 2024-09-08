@@ -4,30 +4,31 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.createGraph
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
 import androidx.navigation.navigation
+import androidx.navigation.toRoute
 import com.yurihondo.applepie.ApplePieMr1Route
 import com.yurihondo.applepie.ApplePieRoute
+import kotlinx.serialization.Serializable
 
 const val applePieNavigationRoute = "apple_pie_route"
 const val applePieGraphRoutePattern = "apple_pie_graph"
 const val uri_for_root = "https://com.yurihondo.applepie"
 
 internal fun NavController.navigateToApplePieGraph(navOptions: NavOptions? = null) {
-    this.navigate(applePieGraphRoutePattern, navOptions)
+    this.navigate(ApplePieGraph, navOptions)
 }
 
 fun NavGraphBuilder.applePieGraph(
     navController: NavController,
     navigator: ApplePieNavigator,
 ) {
-    navigation(
-        route = applePieGraphRoutePattern,
-        startDestination = applePieNavigationRoute,
+    navigation<ApplePieGraph>(
+        startDestination = ApplePieDestination,
     ) {
-        composable(
-            route = applePieNavigationRoute,
+        composable<ApplePieDestination>(
             deepLinks = listOf(
                 navDeepLink { uriPattern = uri_for_root }
             ),
@@ -47,36 +48,31 @@ private const val applePieMr1NavigationRouteBase = "apple_pie_mr1_route"
 private const val applePieMr1NavigationParamFrom = "from"
 const val applePieMr1NavigationRoute =
     "$applePieMr1NavigationRouteBase/{$applePieMr1NavigationParamFrom}"
-const val uri_for_mr1 = "https://com.yurihondo.applepie.mr1"
 
 fun NavController.navigateToApplePieMr1Graph(
     from: String,
     navOptions: NavOptions? = null
 ) {
-    this.navigate("$applePieMr1GraphRoutePattern/$from", navOptions)
+    this.navigate(ApplePieMr1Destination(from), navOptions)
 }
 
 fun NavGraphBuilder.applePieMr1Graph(
     navigateToBananaBreadMr1Graph: () -> Unit,
 ) {
-    navigation(
-        route = "$applePieMr1GraphRoutePattern/{$applePieMr1NavigationParamFrom}",
-        startDestination = applePieMr1NavigationRoute,
+    navigation<ApplePieMr1Graph>(
+        startDestination = ApplePieMr1Destination("unknown"),
     ) {
-        composable(
-            route = applePieMr1NavigationRoute,
-            arguments = listOf(
-                navArgument(applePieMr1NavigationParamFrom) { defaultValue = "unknown" }
-            ),
+        composable<ApplePieMr1Destination>(
             deepLinks = listOf(
-                navDeepLink { uriPattern = "$uri_for_mr1?$applePieMr1NavigationParamFrom={$applePieMr1NavigationParamFrom}" }
+                navDeepLink<ApplePieMr1Destination>(
+                    basePath = "com.yurihondo://show=apple_pie_mr1"
+                )
             ),
-        ) { entry ->
+        ) { backStackEntry ->
             ApplePieMr1Route(
-                from = entry.arguments?.getString(applePieMr1NavigationParamFrom)!!,
+                from = backStackEntry.toRoute<ApplePieMr1Destination>().from,
                 onClickMoveBananaBreadMr1 = navigateToBananaBreadMr1Graph
             )
         }
     }
 }
-

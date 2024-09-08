@@ -1,4 +1,5 @@
 [versions]
+kotlinxSerialization = "1.6.3"
 compose-bom = "2024.06.00"
 core = "1.13.1"
 lifecycle = "2.8.3"
@@ -6,9 +7,12 @@ activity = "1.9.0"
 junit = "4.13.2"
 androidx-junit = "1.2.1"
 espresso = "3.6.1"
-navigation = "2.7.7"
+navigation = "2.8.0"
 
 [libraries]
+# Kotlin
+kotlinxSerialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
 # Compose
 composeBom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
 composeUi = { module = "androidx.compose.ui:ui" }

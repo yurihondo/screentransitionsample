@@ -7,7 +7,7 @@ import com.yurihondo.core.ui.navigation.GraphSpec
 class DonutGraphSpec: GraphSpec {
     override val startRoute = donutNavigationRoute
 
-    override fun NavController.navigate(navOptions: NavOptions?) {
+    override fun NavController.navigateToGraph(navOptions: NavOptions?) {
         navigateToDonutGraph(navOptions)
     }
 }

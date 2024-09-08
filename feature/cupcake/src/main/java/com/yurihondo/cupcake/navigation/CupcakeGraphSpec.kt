@@ -7,7 +7,7 @@ import com.yurihondo.core.ui.navigation.GraphSpec
 class CupcakeGraphSpec: GraphSpec {
     override val startRoute = cupcakeNavigationRoute
 
-    override fun NavController.navigate(navOptions: NavOptions?) {
+    override fun NavController.navigateToGraph(navOptions: NavOptions?) {
         navigateToCupcakeGraph(navOptions)
     }
 }

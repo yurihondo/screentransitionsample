@@ -7,7 +7,7 @@ import com.yurihondo.core.ui.navigation.GraphSpec
 class EclairGraphSpec: GraphSpec{
     override val startRoute = eclairNavigationRoute
 
-    override fun NavController.navigate(navOptions: NavOptions?) {
+    override fun NavController.navigateToGraph(navOptions: NavOptions?) {
         navigateToEclairGraph(navOptions)
     }
 }

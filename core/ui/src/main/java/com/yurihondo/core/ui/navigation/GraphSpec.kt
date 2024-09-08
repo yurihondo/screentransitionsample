@@ -5,5 +5,5 @@ import androidx.navigation.NavOptions
 
 interface GraphSpec {
     val startRoute: String
-    fun NavController.navigate(navOptions: NavOptions? = null)
+    fun NavController.navigateToGraph(navOptions: NavOptions? = null)
 }

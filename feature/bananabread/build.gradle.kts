@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -54,6 +55,9 @@ dependencies {
     // AndroidX
     implementation(libs.androidxCore)
     implementation(libs.androidxActivity)
+
+    // Kotlin
+    implementation(libs.kotlinxSerialization)
 
     // Lifecycle
     implementation(libs.lifecycleRuntimeKtx)

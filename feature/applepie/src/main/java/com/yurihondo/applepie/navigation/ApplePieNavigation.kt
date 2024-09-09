@@ -13,8 +13,6 @@ import com.yurihondo.applepie.ApplePieMr1Route
 import com.yurihondo.applepie.ApplePieRoute
 import kotlinx.serialization.Serializable
 
-const val applePieNavigationRoute = "apple_pie_route"
-const val applePieGraphRoutePattern = "apple_pie_graph"
 const val uri_for_root = "https://com.yurihondo.applepie"
 
 internal fun NavController.navigateToApplePieGraph(navOptions: NavOptions? = null) {
@@ -30,7 +28,9 @@ fun NavGraphBuilder.applePieGraph(
     ) {
         composable<ApplePieDestination>(
             deepLinks = listOf(
-                navDeepLink { uriPattern = uri_for_root }
+                navDeepLink<ApplePieDestination> (
+                    basePath = "https://yurihondo.com/applepie"
+                )
             ),
         ) {
             ApplePieRoute(
@@ -42,12 +42,6 @@ fun NavGraphBuilder.applePieGraph(
         )
     }
 }
-
-private const val applePieMr1GraphRoutePattern = "apple_pie_mr1_graph"
-private const val applePieMr1NavigationRouteBase = "apple_pie_mr1_route"
-private const val applePieMr1NavigationParamFrom = "from"
-const val applePieMr1NavigationRoute =
-    "$applePieMr1NavigationRouteBase/{$applePieMr1NavigationParamFrom}"
 
 fun NavController.navigateToApplePieMr1Graph(
     from: String,
@@ -65,7 +59,7 @@ fun NavGraphBuilder.applePieMr1Graph(
         composable<ApplePieMr1Destination>(
             deepLinks = listOf(
                 navDeepLink<ApplePieMr1Destination>(
-                    basePath = "com.yurihondo://show=apple_pie_mr1"
+                    basePath = "https://yurihondo.com/applepie_mr1"
                 )
             ),
         ) { backStackEntry ->

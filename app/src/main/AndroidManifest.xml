@@ -28,9 +28,11 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data
-                    android:host="com.yurihondo.applepie.mr1"
-                    android:scheme="https" />
+                <data android:host="yurihondo.com" />
+                <data android:scheme="https" />
+                <data android:pathPrefix="/applepie" />
+                <data android:pathPrefix="/applepie_mr1" />
+                <data android:pathPrefix="/bananabread_mr1" />
             </intent-filter>
         </activity>
 

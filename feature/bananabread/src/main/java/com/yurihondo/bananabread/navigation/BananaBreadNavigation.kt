@@ -42,7 +42,7 @@ fun NavGraphBuilder.bananaBreadMr1Graph(
         composable<BananaBreadMr1Destination>(
             deepLinks = listOf(
                 navDeepLink<BananaBreadMr1Destination>(
-                    basePath = "com.yurihondo://show=banana_bread_mr1"
+                    basePath = "https://yurihondo.com/bananabread_mr1"
                 )
             ),
         ) {

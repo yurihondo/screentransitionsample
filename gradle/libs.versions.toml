@@ -1,4 +1,9 @@
 [versions]
+# Plugins
+kotlin = "2.0.20"
+androidGradlePlugin = "8.5.2"
+
+# Libs
 compose-bom = "2024.06.00"
 core = "1.13.1"
 lifecycle = "2.8.3"
@@ -52,3 +57,6 @@ composeDebug = [
 ]
 
 [plugins]
+androidLibrary = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

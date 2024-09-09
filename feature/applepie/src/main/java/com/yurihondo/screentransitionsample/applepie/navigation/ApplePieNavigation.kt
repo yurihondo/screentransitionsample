@@ -47,7 +47,6 @@ private const val applePieMr1NavigationRouteBase = "apple_pie_mr1_route"
 private const val applePieMr1NavigationParamFrom = "from"
 const val applePieMr1NavigationRoute =
     "$applePieMr1NavigationRouteBase/{$applePieMr1NavigationParamFrom}"
-const val uri_for_mr1 = "https://com.yurihondo.applepie.mr1"
 
 fun NavController.navigateToApplePieMr1Graph(
     from: String,
@@ -69,7 +68,7 @@ fun NavGraphBuilder.applePieMr1Graph(
                 navArgument(applePieMr1NavigationParamFrom) { defaultValue = "unknown" }
             ),
             deepLinks = listOf(
-                navDeepLink { uriPattern = "$uri_for_mr1?$applePieMr1NavigationParamFrom={$applePieMr1NavigationParamFrom}" }
+                navDeepLink { uriPattern = "https://com.yurihondo.screentransitionsample/applepie_mr1?$applePieMr1NavigationParamFrom={$applePieMr1NavigationParamFrom}" }
             ),
         ) { entry ->
             ApplePieMr1Route(

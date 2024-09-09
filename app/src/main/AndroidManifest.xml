@@ -28,9 +28,10 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data
-                    android:host="com.yurihondo.screentransitionsample.applepie.mr1"
-                    android:scheme="https" />
+                <data android:pathPrefix="/applepie_mr1" />
+                <data android:pathPrefix="/bananabread_mr1" />
+                <data android:scheme="https" />
+                <data android:host="com.yurihondo.screentransitionsample" />
             </intent-filter>
         </activity>
 

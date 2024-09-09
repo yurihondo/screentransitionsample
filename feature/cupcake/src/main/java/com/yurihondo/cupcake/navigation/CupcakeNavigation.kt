@@ -7,21 +7,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.yurihondo.cupcake.CupcakeRoute
 
-internal const val cupcakeNavigationRoute = "cupcake_route"
-internal const val cupcakeGraphRoutePattern = "cupcake_graph"
-
 internal fun NavController.navigateToCupcakeGraph(navOptions: NavOptions? = null) {
-    this.navigate(cupcakeGraphRoutePattern, navOptions)
+    this.navigate(CupcakeGraph, navOptions)
 }
 
 fun NavGraphBuilder.cupcakeGraph(
     navigator: CupcakeNavigator,
 ) {
-    navigation(
-        route = cupcakeGraphRoutePattern,
-        startDestination = cupcakeNavigationRoute,
+    navigation<CupcakeGraph>(
+        startDestination = CupcakeDestination,
     ) {
-        composable(route = cupcakeNavigationRoute) {
+        composable<CupcakeDestination> {
             CupcakeRoute(
                 onNavigateToApplePieMr1 = navigator::navigateToApplePieMr1Graph
             )

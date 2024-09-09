@@ -1,6 +1,7 @@
 package com.yurihondo.screentransitionsample.ui
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -10,14 +11,14 @@ import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavGraph
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.ComposeNavigator.Destination
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.yurihondo.applepie.navigation.applePieMr1NavigationRoute
-import com.yurihondo.bananabread.navigation.bananaBreadMr1NavigationRoute
+import com.yurihondo.applepie.navigation.ApplePieMr1Destination
+import com.yurihondo.bananabread.navigation.BananaBreadMr1Destination
 import com.yurihondo.screentransitionsample.core.common.extension.findActivity
 import com.yurihondo.screentransitionsample.navigation.LifoUniqueQueue
 import com.yurihondo.screentransitionsample.navigation.TopLevelDestination
@@ -36,8 +37,8 @@ internal class AppState(
         private val DEFAULT_DESTINATION = TopLevelDestination.APPLE_PIE
 
         private val TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP = mapOf(
-            applePieMr1NavigationRoute to HIDE,
-            bananaBreadMr1NavigationRoute to SAME_AS_PARENT,
+            ApplePieMr1Destination::class to HIDE,
+            BananaBreadMr1Destination::class to SAME_AS_PARENT,
         )
     }
 
@@ -58,7 +59,8 @@ internal class AppState(
         coreData.topLevelDestinationBackQueue.add(currentTopLevelDestination)
 
         navHostController.addOnDestinationChangedListener { navController, dest, _ ->
-            val behaviorType = dest.route?.let { route ->
+            val behaviorType = dest.let { dest ->
+                val route = TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP.keys.find {dest.hasRoute(it)}
                 TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP[route]
             }
 
@@ -96,10 +98,12 @@ internal class AppState(
     }
 
     fun onBack() {
+        Log.d("yuri", "onBack: isInStartRoute() = ${isInStartRoute()}")
         if (isInStartRoute()) {
             // Remove current BackStack from queue and check next one.
             coreData.topLevelDestinationBackQueue.remove()
             coreData.topLevelDestinationBackQueue.element()?.let { dest ->
+                Log.d("yuri", "onBack: navigateToTopLevelDestination($dest)")
                 navigateToTopLevelDestination(dest)
                 coreData.currentTopLevelDestination = dest
             } ?: navHostController.context.findActivity().finish()
@@ -131,12 +135,8 @@ internal class AppState(
     }
 
     private fun isInStartRoute(): Boolean {
-        val navGraph = navHostController.currentBackStack.value
-            .map { it.destination }
-            .filterIsInstance<NavGraph>()
-            .lastOrNull() ?: return false
-
-        return navHostController.currentBackStackEntry?.destination?.route == navGraph.startDestinationRoute
+        val startRouteOnCurrentDest = currentTopLevelDestination.graph().startRouteClass
+        return navHostController.currentBackStackEntry?.destination?.hasRoute(startRouteOnCurrentDest) ?: false
     }
 
     private fun hideNavigation() {
@@ -165,7 +165,8 @@ internal class AppState(
             // Specifically, NavDestination is a base class that has concrete classes such as Graph (ComposeNavGraph) and Screen (Destination), so it should be checked.
             // To obtain the Behavior for each screen, the NavDestination is checked to ensure it is a Destination.
             if (entry.destination is Destination) {
-                val behavior = TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP[entry.destination.route]
+                val route = TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP.keys.find { entry.destination.hasRoute(it) }
+                val behavior = TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP[route]
                 if (behavior != SAME_AS_PARENT) {
                     return behavior
                 }

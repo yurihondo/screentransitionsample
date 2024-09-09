@@ -9,9 +9,6 @@ import androidx.navigation.navigation
 import com.yurihondo.bananabread.BananaBreadMr1Route
 import com.yurihondo.bananabread.BananaBreadRoute
 
-internal const val bananaBreadNavigationRoute = "banana_bread_route"
-internal const val bananaBreadGraphRoutePattern = "banana_bread_graph"
-
 internal fun NavController.navigateToBananaBreadGraph(navOptions: NavOptions? = null) {
     this.navigate(BananaBreadGraph, navOptions)
 }
@@ -33,12 +30,8 @@ fun NavGraphBuilder.bananaBreadGraph(
     }
 }
 
-const val bananaBreadMr1NavigationRoute = "banana_bread_mr1_route"
-const val bananaBreadMr1GraphRoutePattern = "banana_bread_mr1_graph"
-const val uri_for_mr1 = "https://com.yurihondo.bananabread.mr1"
-
 fun NavController.navigateToBananaBreadMr1Graph(navOptions: NavOptions? = null) {
-    this.navigate(bananaBreadMr1GraphRoutePattern, navOptions)
+    this.navigate(BananaBreadMr1Destination, navOptions)
 }
 
 fun NavGraphBuilder.bananaBreadMr1Graph(
@@ -48,7 +41,9 @@ fun NavGraphBuilder.bananaBreadMr1Graph(
     ) {
         composable<BananaBreadMr1Destination>(
             deepLinks = listOf(
-                navDeepLink { uriPattern = uri_for_mr1 }
+                navDeepLink<BananaBreadMr1Destination>(
+                    basePath = "com.yurihondo://show=banana_bread_mr1"
+                )
             ),
         ) {
             BananaBreadMr1Route()

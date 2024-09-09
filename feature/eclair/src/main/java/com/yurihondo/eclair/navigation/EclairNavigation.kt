@@ -7,21 +7,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.yurihondo.eclair.EclairRoute
 
-const val eclairNavigationRoute = "eclair_route"
-const val eclairGraphRoutePattern = "eclair_graph"
-
 internal fun NavController.navigateToEclairGraph(navOptions: NavOptions? = null) {
-    this.navigate(eclairGraphRoutePattern, navOptions)
+    this.navigate(EclairGraph, navOptions)
 }
 
 fun NavGraphBuilder.eclairGraph(
     nestedGraphs: NavGraphBuilder.() -> Unit,
 ) {
-    navigation(
-        route = eclairGraphRoutePattern,
-        startDestination = eclairNavigationRoute,
+    navigation<EclairGraph>(
+        startDestination = EclairDestination,
     ) {
-        composable(route = eclairNavigationRoute) {
+        composable<EclairDestination> {
             EclairRoute()
         }
         nestedGraphs()

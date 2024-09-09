@@ -7,21 +7,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.yurihondo.donut.DonutRoute
 
-const val donutNavigationRoute = "donut_route"
-const val donutGraphRoutePattern = "donut_graph"
-
 internal fun NavController.navigateToDonutGraph(navOptions: NavOptions ? = null) {
-    this.navigate(donutGraphRoutePattern, navOptions)
+    this.navigate(DonutGraph, navOptions)
 }
 
 fun NavGraphBuilder.donutGraph(
     nestedGraphs: NavGraphBuilder.() -> Unit,
 ) {
-    navigation(
-        route = donutGraphRoutePattern,
-        startDestination = donutNavigationRoute,
+    navigation<DonutGraph>(
+        startDestination = DonutDestination,
     ) {
-        composable(route = donutNavigationRoute) {
+        composable<DonutDestination> {
             DonutRoute()
         }
         nestedGraphs()

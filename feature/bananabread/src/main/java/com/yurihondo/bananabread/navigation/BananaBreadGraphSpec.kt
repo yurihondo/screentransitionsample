@@ -5,7 +5,7 @@ import androidx.navigation.NavOptions
 import com.yurihondo.core.ui.navigation.GraphSpec
 
 class BananaBreadGraphSpec: GraphSpec {
-    override val startRoute = bananaBreadNavigationRoute
+    override val startRouteClass = BananaBreadDestination::class
 
     override fun NavController.navigateToGraph(navOptions: NavOptions?) {
         navigateToBananaBreadGraph(navOptions)

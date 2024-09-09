@@ -5,7 +5,7 @@ import androidx.navigation.NavOptions
 import com.yurihondo.core.ui.navigation.GraphSpec
 
 class DonutGraphSpec: GraphSpec {
-    override val startRoute = donutNavigationRoute
+    override val startRouteClass = DonutDestination::class
 
     override fun NavController.navigateToGraph(navOptions: NavOptions?) {
         navigateToDonutGraph(navOptions)

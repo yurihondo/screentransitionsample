@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -42,6 +43,9 @@ android {
 dependencies {
     // Module
     implementation(projects.core.ui)
+
+    // Kotlin
+    implementation(libs.kotlinxSerialization)
 
     // Compose
     val composeBom = platform(libs.composeBom)

@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.yurihondo.cupcake"
+    namespace = "com.yurihondo.screentransitionsample.cupcake"
     compileSdk = 35
 
     defaultConfig {

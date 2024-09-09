@@ -29,7 +29,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data
-                    android:host="com.yurihondo.applepie.mr1"
+                    android:host="com.yurihondo.screentransitionsample.applepie.mr1"
                     android:scheme="https" />
             </intent-filter>
         </activity>

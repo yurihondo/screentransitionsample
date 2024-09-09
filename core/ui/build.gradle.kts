@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.yurihondo.core.ui"
+    namespace = "com.yurihondo.screentransitionsample.core.ui"
     compileSdk = 35
 
     defaultConfig {

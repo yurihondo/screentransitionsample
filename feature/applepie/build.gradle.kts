@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.yurihondo.applepie"
+    namespace = "com.yurihondo.screentransitionsample.applepie"
     compileSdk = 35
 
     defaultConfig {

@@ -1,16 +1,16 @@
 package com.yurihondo.screentransitionsample.navigation
 
+import com.ramcosta.composedestinations.spec.DirectionNavGraphSpec
 import com.yurihondo.screentransitionsample.R
-import com.yurihondo.screentransitionsample.applepie.navigation.AppleGraphSpec
-import com.yurihondo.screentransitionsample.bananabread.navigation.BananaBreadGraphSpec
-import com.yurihondo.screentransitionsample.core.ui.navigation.GraphSpec
-import com.yurihondo.screentransitionsample.cupcake.navigation.CupcakeGraphSpec
-import com.yurihondo.screentransitionsample.donut.navigation.DonutGraphSpec
-import com.yurihondo.screentransitionsample.eclair.navigation.EclairGraphSpec
+import com.yurihondo.screentransitionsample.applepie.navgraphs.ApplePieNavGraph
+import com.yurihondo.screentransitionsample.bananabread.navgraphs.BananaBreadNavGraph
+import com.yurihondo.screentransitionsample.cupcake.navgraphs.CupcakeNavGraph
+import com.yurihondo.screentransitionsample.donut.navgraphs.DonutNavGraph
+import com.yurihondo.screentransitionsample.eclair.navgraphs.EclairNavGraph
 
 internal enum class TopLevelDestination(
     val titleTextId: Int,
-    val graph: () -> GraphSpec
+    val graph: () -> DirectionNavGraphSpec
 ) {
     UNKNOWN(
         titleTextId = -1,
@@ -18,24 +18,24 @@ internal enum class TopLevelDestination(
     ),
     APPLE_PIE(
         titleTextId = R.string.destination_name_apple_pie,
-        graph = { AppleGraphSpec() },
+        graph = { ApplePieNavGraph },
     ),
 
     BANANA_BREAD(
         titleTextId = R.string.destination_name_banana_bread,
-        graph = { BananaBreadGraphSpec() },
+        graph = { BananaBreadNavGraph },
     ),
     CUPCAKE(
         titleTextId = R.string.destination_name_cupcake,
-        graph = { CupcakeGraphSpec() },
+        graph = { CupcakeNavGraph },
     ),
     DONUT(
         titleTextId = R.string.destination_name_donut,
-        graph = { DonutGraphSpec() },
+        graph = { DonutNavGraph },
     ),
     ECLAIR(
         titleTextId = R.string.destination_name_eclair,
-        graph = { EclairGraphSpec() },
+        graph = { EclairNavGraph },
     );
 
     companion object {

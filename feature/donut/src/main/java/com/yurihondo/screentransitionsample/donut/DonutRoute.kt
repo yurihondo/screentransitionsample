@@ -4,16 +4,18 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.ramcosta.composedestinations.annotation.Destination
+import com.yurihondo.screentransitionsample.donut.navigation.DonutGraph
 
+@Destination<DonutGraph>(start = true)
 @Composable
 internal fun DonutRoute(
-    modifier: Modifier = Modifier,
 ) {
-    DonutScreen(modifier = modifier)
+    DonutScreen()
 }
 
 @Composable
-internal fun DonutScreen(
+private fun DonutScreen(
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {

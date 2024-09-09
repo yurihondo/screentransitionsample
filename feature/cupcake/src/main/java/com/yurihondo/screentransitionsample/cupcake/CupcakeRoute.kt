@@ -11,15 +11,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.ramcosta.composedestinations.annotation.Destination
+import com.yurihondo.screentransitionsample.cupcake.navigation.CupcakeGraph
+import com.yurihondo.screentransitionsample.cupcake.navigation.CupcakeNavigator
 
+@Destination<CupcakeGraph>(start = true)
 @Composable
 internal fun CupcakeRoute(
-    onNavigateToApplePieMr1: (String) -> Unit,
-    modifier: Modifier = Modifier,
+    cupcakeNavigator: CupcakeNavigator,
 ) {
     CupcakeScreen(
-        onNavigateToApplePieMr1 = onNavigateToApplePieMr1,
-        modifier = modifier,
+        onNavigateToApplePieMr1 = cupcakeNavigator::navigateToApplePieMr1Graph,
     )
 }
 

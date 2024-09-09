@@ -2,6 +2,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -36,6 +37,12 @@ android {
     }
 }
 
+ksp {
+    arg("compose-destinations.codeGenPackageName", "com.yurihondo.screentransitionsample.eclair")
+    arg("compose-destinations.moduleName", "eclair")
+    arg("compose-destinations.htmlMermaidGraph", "$rootDir/navigation-docs")
+}
+
 dependencies {
     // Module
     implementation(projects.core.ui)
@@ -57,6 +64,10 @@ dependencies {
 
     // Navigation
     implementation(libs.navigationCompose)
+
+    // Compose Destinations
+    implementation(libs.composeDestinationsCore)
+    ksp(libs.composeDestinationsKsp)
 
     // Test
     testImplementation(libs.junit)

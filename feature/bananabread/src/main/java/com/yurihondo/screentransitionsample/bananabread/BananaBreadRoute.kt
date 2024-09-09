@@ -11,17 +11,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.yurihondo.screentransitionsample.bananabread.destinations.BananaBreadMr1RouteDestination
+import com.yurihondo.screentransitionsample.bananabread.navigation.BananaBreadGraph
+import com.yurihondo.screentransitionsample.bananabread.navigation.BananaBreadNavigator
 
+@Destination<BananaBreadGraph>(start = true)
 @Composable
 internal fun BananaBreadRoute(
-    onClickMoveBananaBreadMr1: () -> Unit,
-    onClickJumpApplePirMr1: (String) -> Unit,
-    modifier: Modifier = Modifier,
+    bananaBreadNavigator: BananaBreadNavigator,
+    destinationsNavigator: DestinationsNavigator,
 ) {
     BananaBreadScreen(
-        onClickMoveBananaBreadMr1 = onClickMoveBananaBreadMr1,
-        onClickJumpApplePirMr1 = onClickJumpApplePirMr1,
-        modifier = modifier,
+        onClickMoveBananaBreadMr1 = { destinationsNavigator.navigate(BananaBreadMr1RouteDestination) },
+        onClickJumpApplePirMr1 = { bananaBreadNavigator.navigateToApplePieMr1Graph("BananaBread") },
     )
 }
 

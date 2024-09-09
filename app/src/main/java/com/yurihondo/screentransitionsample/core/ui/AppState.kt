@@ -1,6 +1,7 @@
 package com.yurihondo.screentransitionsample.core.ui
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -10,13 +11,15 @@ import androidx.compose.runtime.saveable.mapSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.ComposeNavigator.Destination
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navOptions
-import com.yurihondo.screentransitionsample.applepie.navigation.applePieMr1NavigationRoute
-import com.yurihondo.screentransitionsample.bananabread.navigation.bananaBreadMr1NavigationRoute
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.utils.navGraph
+import com.ramcosta.composedestinations.utils.startDestination
+import com.ramcosta.composedestinations.utils.toDestinationsNavigator
+import com.yurihondo.screentransitionsample.applepie.destinations.ApplePieMr1RouteDestination
+import com.yurihondo.screentransitionsample.bananabread.destinations.BananaBreadMr1RouteDestination
 import com.yurihondo.screentransitionsample.core.common.extension.findActivity
 import com.yurihondo.screentransitionsample.navigation.LifoUniqueQueue
 import com.yurihondo.screentransitionsample.navigation.TopLevelDestination
@@ -27,20 +30,22 @@ import com.yurihondo.screentransitionsample.navigation.TopLevelDestinationBehavi
 @SuppressLint("RestrictedApi")
 @Stable
 internal class AppState(
-    private val coreData: AppStateCoreData,
     val navHostController: NavHostController,
+    private val coreData: AppStateCoreData,
+    private val destinationsNavigator: DestinationsNavigator = navHostController.toDestinationsNavigator()
 ) {
 
     companion object {
         private val DEFAULT_DESTINATION = TopLevelDestination.APPLE_PIE
 
         private val TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP = mapOf(
-            applePieMr1NavigationRoute to HIDE,
-            bananaBreadMr1NavigationRoute to SAME_AS_PARENT,
+            ApplePieMr1RouteDestination.route to HIDE,
+            BananaBreadMr1RouteDestination.route to SAME_AS_PARENT,
         )
     }
 
-    val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.getAvailableDestinations()
+    val topLevelDestinations: List<TopLevelDestination> =
+        TopLevelDestination.getAvailableDestinations()
 
     val currentTopLevelDestination
         get() = coreData.currentTopLevelDestination
@@ -94,10 +99,12 @@ internal class AppState(
     }
 
     fun onBack() {
+        Log.d("AppState", "onBack - isInStartRoute: ${isInStartRoute()}")
         if (isInStartRoute()) {
             // Remove current BackStack from queue and check next one.
-            coreData. topLevelDestinationBackQueue.remove()
+            coreData.topLevelDestinationBackQueue.remove()
             coreData.topLevelDestinationBackQueue.element()?.let { dest ->
+                Log.d("AppState", "onBack - dest: $dest")
                 navigateToTopLevelDestination(dest)
                 coreData.currentTopLevelDestination = dest
             } ?: navHostController.context.findActivity().finish()
@@ -116,22 +123,20 @@ internal class AppState(
     }
 
     private fun navigateToTopLevelDestination(destination: TopLevelDestination) {
-        with(destination.graph()) {
-            val option = navOptions {
-                popUpTo(navHostController.graph.findStartDestination().id) {
-                    saveState = true
-                }
-                launchSingleTop = true
-                restoreState = true
+        destinationsNavigator.navigate(destination.graph()) {
+            popUpTo(navHostController.navGraph.startDestination) {
+                saveState = true
             }
-            navHostController.navigate(option)
+            launchSingleTop = true
+            restoreState = true
         }
     }
 
     private fun isInStartRoute(): Boolean {
-        val startRouteOnCurrentDest = currentTopLevelDestination.graph().startRoute
+        val startRouteOnCurrentDest = currentTopLevelDestination.graph().startRoute.route
         return navHostController.currentBackStackEntry?.destination?.route == startRouteOnCurrentDest
     }
+
 
     private fun hideNavigation() {
         shouldShowNavigation = false

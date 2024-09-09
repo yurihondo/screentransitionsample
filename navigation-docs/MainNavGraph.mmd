@@ -1,0 +1,19 @@
+---
+title: Main Navigation Graph
+---
+%%{init: {'theme':'base', 'themeVariables': { 'primaryTextColor': '#fff' }}%%
+graph TD
+main(["MainGraph"]) -- "start" --- apple_pie_nav_g(["ApplePieGraph 🧩"])
+main(["MainGraph"]) --- banana_bread_nav_g(["BananaBreadGraph 🧩"])
+main(["MainGraph"]) --- cupcake_nav_g(["CupcakeGraph 🧩"])
+main(["MainGraph"]) --- donut_nav_g(["DonutGraph 🧩"])
+main(["MainGraph"]) --- eclair_nav_g(["EclairGraph 🧩"])
+
+click apple_pie_nav_g "ApplePieNavGraph.mmd" "See ApplePieGraph details" _blank
+click banana_bread_nav_g "BananaBreadNavGraph.mmd" "See BananaBreadGraph details" _blank
+click cupcake_nav_g "CupcakeNavGraph.mmd" "See CupcakeGraph details" _blank
+click donut_nav_g "DonutNavGraph.mmd" "See DonutGraph details" _blank
+click eclair_nav_g "EclairNavGraph.mmd" "See EclairGraph details" _blank
+
+classDef navgraph fill:#63BC76,stroke:#ffffff;
+class main,apple_pie_nav_g,banana_bread_nav_g,cupcake_nav_g,donut_nav_g,eclair_nav_g navgraph;

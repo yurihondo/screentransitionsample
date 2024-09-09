@@ -10,43 +10,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import com.yurihondo.screentransitionsample.applepie.navigation.applePieGraph
-import com.yurihondo.screentransitionsample.applepie.navigation.applePieGraphRoutePattern
-import com.yurihondo.screentransitionsample.bananabread.navigation.bananaBreadGraph
+import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.generated.navgraphs.MainNavGraph
+import com.ramcosta.composedestinations.navigation.dependency
+import com.ramcosta.composedestinations.rememberNavHostEngine
 import com.yurihondo.screentransitionsample.core.common.extension.findActivity
-import com.yurihondo.screentransitionsample.cupcake.navigation.cupcakeGraph
-import com.yurihondo.screentransitionsample.donut.navigation.donutGraph
-import com.yurihondo.screentransitionsample.eclair.navigation.eclairGraph
 
 @Composable
 internal fun MainNavHost(
     navHostController: NavHostController,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    onHandleIntentForDeepLink: () -> Unit,
+    onHandleIntentForDeepLink: () -> Unit = {},
 ) {
     val mainNavigator = rememberMainNavigator(navHostController)
 
-    NavHost(
-        navController = navHostController,
-        startDestination = applePieGraphRoutePattern,
+    DestinationsNavHost(
         modifier = modifier,
-    ) {
-        applePieGraph(
-            navController = navHostController,
-            navigator = mainNavigator,
-        )
-        bananaBreadGraph(
-            navController = navHostController,
-            navigator = mainNavigator,
-        )
-        cupcakeGraph(
-            navigator = mainNavigator,
-        )
-        donutGraph {}
-        eclairGraph {}
-    }
+        navGraph = MainNavGraph,
+        navController = navHostController,
+        engine = rememberNavHostEngine(),
+        dependenciesContainerBuilder = {
+            dependency(mainNavigator)
+        },
+    )
 
     // Have to set our own BackHandler after NavHost to override the BackHandler inside DestinationsNavHost
     // https://issuetracker.google.com/issues/308445371

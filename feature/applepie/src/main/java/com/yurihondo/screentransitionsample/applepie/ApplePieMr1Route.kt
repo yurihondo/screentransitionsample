@@ -11,17 +11,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.parameters.DeepLink
+import com.yurihondo.screentransitionsample.applepie.navigation.ApplePieMr1Graph
+import com.yurihondo.screentransitionsample.applepie.navigation.ApplePieNavigator
 
+data class ApplePieMr1Args(
+    val from: String = "unknown",
+)
+
+@Destination<ApplePieMr1Graph>(
+    start = true,
+    navArgs = ApplePieMr1Args::class,
+    deepLinks = [
+        DeepLink(
+            uriPattern = "https://com.yurihondo.screentransitionsample/applepie_mr1?from={from}",
+        )
+    ],
+)
 @Composable
 internal fun ApplePieMr1Route(
-    from: String,
-    onClickMoveBananaBreadMr1: () -> Unit,
-    modifier: Modifier = Modifier,
+    applePieNavigator: ApplePieNavigator,
+    args: ApplePieMr1Args,
 ) {
     ApplePieMr1Screen(
-        from = from,
-        onClickMoveBananaBreadMr1 = onClickMoveBananaBreadMr1,
-        modifier = modifier,
+        from = args.from,
+        onClickMoveBananaBreadMr1 = applePieNavigator::navigateToBananaBreadMr1Graph,
     )
 }
 

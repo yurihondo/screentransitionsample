@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.yurihondo.eclair"
+    namespace = "com.yurihondo.screentransitionsample.eclair"
     compileSdk = 35
 
     defaultConfig {

@@ -12,12 +12,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.yurihondo.applepie.navigation.ApplePieGraph
-import com.yurihondo.applepie.navigation.applePieGraph
-import com.yurihondo.bananabread.navigation.bananaBreadGraph
-import com.yurihondo.cupcake.navigation.cupcakeGraph
-import com.yurihondo.donut.navigation.donutGraph
-import com.yurihondo.eclair.navigation.eclairGraph
+import com.yurihondo.screentransitionsample.applepie.navigation.applePieGraph
+import com.yurihondo.screentransitionsample.bananabread.navigation.bananaBreadGraph
 import com.yurihondo.screentransitionsample.core.common.extension.findActivity
+import com.yurihondo.screentransitionsample.cupcake.navigation.cupcakeGraph
+import com.yurihondo.screentransitionsample.donut.navigation.donutGraph
+import com.yurihondo.screentransitionsample.eclair.navigation.eclairGraph
 
 @Composable
 internal fun MainNavHost(

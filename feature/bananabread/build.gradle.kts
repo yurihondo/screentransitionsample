@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.yurihondo.bananabread"
+    namespace = "com.yurihondo.screentransitionsample.bananabread"
     compileSdk = 35
 
     defaultConfig {

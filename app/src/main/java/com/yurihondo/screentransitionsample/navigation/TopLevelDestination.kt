@@ -1,13 +1,12 @@
 package com.yurihondo.screentransitionsample.navigation
 
-import com.yurihondo.applepie.navigation.AppleGraphSpec
-import com.yurihondo.bananabread.navigation.BananaBreadGraphSpec
-import com.yurihondo.core.ui.navigation.GraphSpec
-import com.yurihondo.cupcake.navigation.CupcakeGraphSpec
-import com.yurihondo.donut.navigation.DonutGraphSpec
-import com.yurihondo.eclair.navigation.EclairGraphSpec
 import com.yurihondo.screentransitionsample.R
-import java.lang.UnsupportedOperationException
+import com.yurihondo.screentransitionsample.applepie.navigation.AppleGraphSpec
+import com.yurihondo.screentransitionsample.bananabread.navigation.BananaBreadGraphSpec
+import com.yurihondo.screentransitionsample.core.ui.navigation.GraphSpec
+import com.yurihondo.screentransitionsample.cupcake.navigation.CupcakeGraphSpec
+import com.yurihondo.screentransitionsample.donut.navigation.DonutGraphSpec
+import com.yurihondo.screentransitionsample.eclair.navigation.EclairGraphSpec
 
 internal enum class TopLevelDestination(
     val titleTextId: Int,

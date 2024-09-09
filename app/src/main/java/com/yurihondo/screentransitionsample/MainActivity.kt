@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.yurihondo.screentransitionsample.core.ui.App
+import com.yurihondo.screentransitionsample.core.ui.theme.ScreenTransitionSampleTheme
 import com.yurihondo.screentransitionsample.navigation.DeepLinksNavigator
-import com.yurihondo.screentransitionsample.ui.App
-import com.yurihondo.screentransitionsample.ui.theme.ScreenTransitionSampleTheme
 
 class MainActivity : ComponentActivity() {
 

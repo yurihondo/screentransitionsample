@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.yurihondo.donut"
+    namespace = "com.yurihondo.screentransitionsample.donut"
     compileSdk = 35
 
     defaultConfig {

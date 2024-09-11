@@ -1,6 +1,7 @@
-# Screen Transition Sample　for Compose Destinations
+# Screen Transition Sample　for　Compose Destinations
 
 This repository demonstrates various screen transition techniques using Jetpack Compose and Navigation using compose destinations.
+Plz clone and run this repository if you try this sample app.
 
 ## Introduction to Compose Destinations
 

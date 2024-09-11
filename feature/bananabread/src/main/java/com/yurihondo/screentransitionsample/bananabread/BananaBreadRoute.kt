@@ -25,7 +25,7 @@ internal fun BananaBreadRoute(
 ) {
     BananaBreadScreen(
         onClickMoveBananaBreadMr1 = { destinationsNavigator.navigate(BananaBreadMr1RouteDestination) },
-        onClickJumpApplePirMr1 = { bananaBreadNavigator.navigateToApplePieMr1Graph("BananaBread") },
+        onClickJumpApplePirMr1 = { bananaBreadNavigator.navigateToApplePieMr1("BananaBread") },
     )
 }
 

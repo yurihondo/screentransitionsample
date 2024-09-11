@@ -36,7 +36,7 @@ internal fun ApplePieMr1Route(
 ) {
     ApplePieMr1Screen(
         from = args.from,
-        onClickMoveBananaBreadMr1 = applePieNavigator::navigateToBananaBreadMr1Graph,
+        onClickMoveBananaBreadMr1 = applePieNavigator::navigateToBananaBreadMr1,
     )
 }
 

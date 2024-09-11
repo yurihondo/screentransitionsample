@@ -21,7 +21,7 @@ internal fun CupcakeRoute(
     cupcakeNavigator: CupcakeNavigator,
 ) {
     CupcakeScreen(
-        onNavigateToApplePieMr1 = cupcakeNavigator::navigateToApplePieMr1Graph,
+        onNavigateToApplePieMr1 = cupcakeNavigator::navigateToApplePieMr1,
     )
 }
 

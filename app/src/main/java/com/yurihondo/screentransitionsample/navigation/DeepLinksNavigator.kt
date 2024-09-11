@@ -17,7 +17,7 @@ internal interface DeepLinksNavigator {
         when (intent.action) {
             ACTION_SHOW_BANANA_BREAD_MR1 -> {
                 val clearStack = intent.getBooleanExtra(KEY_CLEAR_STACK, false)
-                navigateToBananaBreadMr1GraphFromExternal(clearStack)
+                navigateToBananaBreadMr1FromExternal(clearStack)
             }
             else -> {
                 consumed = false
@@ -26,5 +26,5 @@ internal interface DeepLinksNavigator {
         return consumed
     }
 
-    fun navigateToBananaBreadMr1GraphFromExternal(clearStack: Boolean)
+    fun navigateToBananaBreadMr1FromExternal(clearStack: Boolean)
 }

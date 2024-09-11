@@ -18,15 +18,15 @@ internal class MainNavigator(
     private val destinationsNavigator: DestinationsNavigator = navController.toDestinationsNavigator()
 ) : ApplePieNavigator, BananaBreadNavigator, CupcakeNavigator, DeepLinksNavigator {
 
-    override fun navigateToBananaBreadMr1Graph() {
+    override fun navigateToBananaBreadMr1() {
         destinationsNavigator.navigate(BananaBreadMr1RouteDestination)
     }
 
-    override fun navigateToApplePieMr1Graph(from: String) {
+    override fun navigateToApplePieMr1(from: String) {
         destinationsNavigator.navigate(ApplePieMr1RouteDestination(from))
     }
 
-    override fun navigateToBananaBreadMr1GraphFromExternal(clearStack: Boolean) {
+    override fun navigateToBananaBreadMr1FromExternal(clearStack: Boolean) {
         destinationsNavigator.navigate(BananaBreadMr1RouteDestination) {
             if (clearStack) {
                 popUpTo(navController.navGraph.startDestination) {

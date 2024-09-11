@@ -1,7 +1,6 @@
 package com.yurihondo.screentransitionsample.core.ui
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
@@ -99,12 +98,10 @@ internal class AppState(
     }
 
     fun onBack() {
-        Log.d("AppState", "onBack - isInStartRoute: ${isInStartRoute()}")
         if (isInStartRoute()) {
             // Remove current BackStack from queue and check next one.
             coreData.topLevelDestinationBackQueue.remove()
             coreData.topLevelDestinationBackQueue.element()?.let { dest ->
-                Log.d("AppState", "onBack - dest: $dest")
                 navigateToTopLevelDestination(dest)
                 coreData.currentTopLevelDestination = dest
             } ?: navHostController.context.findActivity().finish()

@@ -14,10 +14,11 @@ graph TD
 applepie/apple_pie(["ApplePieGraph"]) -- "start" --- applepie/apple_pie_route("ApplePieRoute")
 applepie/apple_pie(["ApplePieGraph"]) --- applepie/apple_pie_mr1(["ApplePieMr1Graph"])
 applepie/apple_pie_mr1(["ApplePieMr1Graph"]) -- "start" --- applepie/apple_pie_mr1_route("ApplePieMr1Route")
+applepie/apple_pie_mr1(["ApplePieMr1Graph"]) --- applepie/edit_route("EditRoute")
 
 
 classDef destination fill:#5383EC,stroke:#ffffff;
-class applepie/apple_pie_route,applepie/apple_pie_mr1_route destination;
+class applepie/apple_pie_route,applepie/apple_pie_mr1_route,applepie/edit_route destination;
 classDef navgraph fill:#63BC76,stroke:#ffffff;
 class applepie/apple_pie_mr1,applepie/apple_pie,applepie/apple_pie_mr1 navgraph;
 

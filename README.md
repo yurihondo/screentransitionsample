@@ -1,6 +1,7 @@
 # Screen Transition Sample for Navigation 2.8
 
 This repository demonstrates various screen transition techniques using Jetpack Compose and Navigation 2.8.0.
+Plz clone and run this repository if you try this sample app.
 
 ## Differences in Navigation 2.8 for this Sample
 
@@ -234,8 +235,8 @@ override fun navigateToBananaBreadMr1FromExternal(clearStack: Boolean) {
 
 ### 4. Safe Passing of NavArgs
 
-To ensure safe passing of NavArgs, this repository uses type-safe methods for passing arguments during navigation. This reduces errors during screen transitions and argument passing, resulting in more reliable transitions. With Navigation 2.7,
-the following method is used to define functions for screen navigation with type checks.
+In Compose Destinations, arguments are passed using `@Serializable` Route objects. When navigating, you pass the Route object as an argument, and on the receiving side, the `BackStackEntry` has a `#toRoute` function that allows you to retrieve the Route object. 
+It’s important to note that `#toRoute` requires you to specify the type of the Route object. If the type is incorrect, it will result in a runtime crash, so be sure to carefully match the type when retrieving arguments.
 
 **NavRoute.kt**
 

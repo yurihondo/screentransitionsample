@@ -26,16 +26,12 @@ fun NavGraphBuilder.bananaBreadGraph(
     ) {
         composable<BananaBreadDestination> {
             BananaBreadRoute(
-                onClickMoveBananaBreadMr1 = navController::navigateToBananaBreadMr1Route,
+                onClickMoveBananaBreadMr1 = { navController.navigate(BananaBreadMr1Destination) },
                 onClickJumpApplePirMr1 = navigator::navigateToApplePieMr1
             )
         }
         bananaBreadMr1Graph()
     }
-}
-
-fun NavController.navigateToBananaBreadMr1Route(navOptions: NavOptions? = null) {
-    this.navigate(BananaBreadMr1Destination, navOptions)
 }
 
 fun NavGraphBuilder.bananaBreadMr1Graph(

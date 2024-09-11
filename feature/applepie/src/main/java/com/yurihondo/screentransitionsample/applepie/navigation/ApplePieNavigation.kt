@@ -14,8 +14,6 @@ import com.yurihondo.applepie.navigation.ApplePieMr1Graph
 import com.yurihondo.screentransitionsample.applepie.ApplePieMr1Route
 import com.yurihondo.screentransitionsample.applepie.ApplePieRoute
 
-const val uri_for_root = "https://com.yurihondo.applepie"
-
 internal fun NavController.navigateToApplePieGraph(navOptions: NavOptions? = null) {
     this.navigate(ApplePieGraph, navOptions)
 }
@@ -35,20 +33,13 @@ fun NavGraphBuilder.applePieGraph(
             ),
         ) {
             ApplePieRoute(
-                onClick = { navController.navigateToApplePieMr1Route("ApplePie") }
+                onClick = { navController.navigate(ApplePieMr1Destination("ApplePie")) }
             )
         }
         applePieMr1Graph(
             navigateToBananaBreadMr1Graph = navigator::navigateToBananaBreadMr1,
         )
     }
-}
-
-fun NavController.navigateToApplePieMr1Route(
-    from: String,
-    navOptions: NavOptions? = null
-) {
-    this.navigate(ApplePieMr1Destination(from), navOptions)
 }
 
 fun NavGraphBuilder.applePieMr1Graph(

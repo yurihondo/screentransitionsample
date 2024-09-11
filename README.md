@@ -7,7 +7,7 @@ Plz clone and run this repository if you try this sample app.
 
 [Compose Destinations](https://github.com/raamcosta/compose-destinations) is a powerful library that leverages Kotlin Symbol Processing (KSP) to generate type-safe navigation code for Jetpack Compose. By automatically generating boilerplate code, it reduces the amount of manual setup required for passing arguments and managing navigation in a type-safe manner. This makes handling navigation in Compose simpler and less error-prone, while maintaining flexibility and code readability.
 
-## Main　Differences from Vanilla Navigation
+## Main Differences from Vanilla Navigation
 
 1. **Automatic Graph Generation**  
    In Compose Destinations, navigation graphs are automatically generated based on the `@Destination` annotations added to your screens. This eliminates the need to manually define navigation graphs, streamlining the setup process.
@@ -22,6 +22,7 @@ Plz clone and run this repository if you try this sample app.
 2. [Toggling Tab Visibility](#toggling-tab-visibility)
 3. [DeepLinks Handling](#deeplinks-handling)
 4. [Safe Passing of NavArgs](#safe-passing-of-navargs)
+5. [Send results back](#send-results-back)
 
 ### 1. Managing Tab History
 
@@ -265,6 +266,54 @@ internal fun ApplePieMr1Route(
     ApplePieMr1Screen(
         from = args.from,
         onClickMoveBananaBreadMr1 = applePieNavigator::navigateToBananaBreadMr1,
+    )
+}
+```
+
+### 5. Send results back
+
+Compose Destinations provides a way to send results back to the previous screen when closing a screen, as an alternative to methods like `ActivityForResult`.
+
+To send results back from a screen, Compose Destinations uses the `resultBackNavigator`. The result is sent from the closing screen, and the receiving screen uses the `ResultRecipient` to type-safely receive the result. This ensures a clean and type-safe way to pass data between screens, eliminating the need for manual result handling.
+
+**EditRoute.kt**
+
+```kotlin
+@Destination<ApplePieMr1Graph>(
+    style = DestinationStyle.Dialog::class
+)
+@Composable
+internal fun EditRoute(
+    from: String,
+    resultBackNavigator: ResultBackNavigator<String>,
+) {
+    EditScreen(
+        initialValue = from,
+        onDone = {
+            resultBackNavigator.navigateBack(it)
+        },
+    )
+}
+```
+
+**ApplePieMr1Route.kt**
+
+```kotlin
+@Composable
+internal fun ApplePieMr1Route(
+    applePieNavigator: ApplePieNavigator,
+    destinationsNavigator: DestinationsNavigator,
+    args: ApplePieMr1Args,
+    resultRecipient: ResultRecipient<EditRouteDestination, String>
+) {
+    var from by rememberSaveable { mutableStateOf(args.from) }
+
+    resultRecipient.onResult { editedFrom -> from = editedFrom }
+
+    ApplePieMr1Screen(
+        from = from,
+        onClickMoveBananaBreadMr1 = applePieNavigator::navigateToBananaBreadMr1,
+        onNavigateEdit = { destinationsNavigator.navigate(EditRouteDestination(from)) }
     )
 }
 ```

@@ -1,6 +1,19 @@
-# Screen Transition Sample
+# Screen Transition Sample　for Compose Destinations
 
-This repository demonstrates various screen transition techniques using Jetpack Compose and Navigation.
+This repository demonstrates various screen transition techniques using Jetpack Compose and Navigation using compose destinations.
+
+## Introduction to Compose Destinations
+
+[Compose Destinations](https://github.com/raamcosta/compose-destinations) is a powerful library that leverages Kotlin Symbol Processing (KSP) to generate type-safe navigation code for Jetpack Compose. By automatically generating boilerplate code, it reduces the amount of manual setup required for passing arguments and managing navigation in a type-safe manner. This makes handling navigation in Compose simpler and less error-prone, while maintaining flexibility and code readability.
+
+## Main　Differences from Vanilla Navigation
+
+1. **Automatic Graph Generation**  
+   In Compose Destinations, navigation graphs are automatically generated based on the `@Destination` annotations added to your screens. This eliminates the need to manually define navigation graphs, streamlining the setup process.
+
+2. **KSP-Generated Destination Classes**  
+   Instead of manually handling screen transitions, Compose Destinations generates `Destination` classes for each screen using Kotlin Symbol Processing (KSP). These generated classes handle navigation and argument passing, reducing the amount of boilerplate code. Screen-specific control and navigation logic is also handled through these `Destination` classes, making the navigation flow more type-safe and maintainable.
+
 
 ## Features
 
@@ -24,22 +37,19 @@ fun onSelectTopLevelDestination(destination: TopLevelDestination) {
 }
 
 private fun navigateToTopLevelDestination(destination: TopLevelDestination) {
-    with(destination.graph()) {
-        val option = navOptions {
-            popUpTo(navHostController.graph.findStartDestination().id) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
+    destinationsNavigator.navigate(destination.graph()) {
+        popUpTo(navHostController.navGraph.startDestination) {
+            saveState = true
         }
-        navHostController.navigate(option)
+        launchSingleTop = true
+        restoreState = true
     }
 }
 
 fun onBack() {
     if (isInStartRoute()) {
         // Remove current BackStack from queue and check next one.
-        coreData. topLevelDestinationBackQueue.remove()
+        coreData.topLevelDestinationBackQueue.remove()
         coreData.topLevelDestinationBackQueue.element()?.let { dest ->
             navigateToTopLevelDestination(dest)
             coreData.currentTopLevelDestination = dest
@@ -49,6 +59,11 @@ fun onBack() {
             navHostController.context.findActivity().finish()
         }
     }
+}
+
+private fun isInStartRoute(): Boolean {
+    val startRouteOnCurrentDest = currentTopLevelDestination.graph().startRoute.route
+    return navHostController.currentBackStackEntry?.destination?.route == startRouteOnCurrentDest
 }
 ```
 
@@ -63,8 +78,8 @@ The visibility of tabs is dynamically controlled based on the navigation destina
 ```kotlin
 companion object {
     private val TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP = mapOf(
-        applePieMr1NavigationRoute to HIDE,
-        bananaBreadMr1NavigationRoute to SAME_AS_PARENT,
+        ApplePieMr1RouteDestination.route to HIDE,
+        BananaBreadMr1RouteDestination.route to SAME_AS_PARENT,
     )
 }
 
@@ -97,31 +112,31 @@ init {
     }
 }
 
-/**
- * Find the actual top level navigation (bottom navigation / navigation rail) behavior (hide or show)
- * for [SAME_AS_PARENT] type, by iterating the back stack entries (ancestor screens).
- */
-private fun List<NavBackStackEntry>.findActualParentTopLevelNavigationBehavior(
-    target: NavBackStackEntry
-): TopLevelDestinationBehavior? {
-    val targetIndex = indexOf(target)
-    if (targetIndex == -1) return null // not found
-    // Take the entries up to 'targetIndex' and reverse the order.
-    // Reverse the order to check entries from the target index backwards, to find the behavior of parent entries.
-    for (entry in take(targetIndex).asReversed()) {
-        // NavBackStackEntry includes those intended for Graph as well as those for Screen.
-        // This can be distinguished by looking at the NavDestination held by NavBackStackEntry.
-        // Specifically, NavDestination is a base class that has concrete classes such as Graph (ComposeNavGraph) and Screen (Destination), so it should be checked.
-        // To obtain the Behavior for each screen, the NavDestination is checked to ensure it is a Destination.
-        if (entry.destination is Destination) {
-            val behavior = TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP[entry.destination.route]
-            if (behavior != SAME_AS_PARENT) {
-                return behavior
-            }
-        }
-    }
-    return null
-}
+ /**
+  * Find the actual top level navigation (bottom navigation / navigation rail) behavior (hide or show)
+  * for [SAME_AS_PARENT] type, by iterating the back stack entries (ancestor screens).
+  */
+ private fun List<NavBackStackEntry>.findActualParentTopLevelNavigationBehavior(
+     target: NavBackStackEntry
+ ): TopLevelDestinationBehavior? {
+     val targetIndex = indexOf(target)
+     if (targetIndex == -1) return null // not found
+     // Take the entries up to 'targetIndex' and reverse the order.
+     // Reverse the order to check entries from the target index backwards, to find the behavior of parent entries.
+     for (entry in take(targetIndex).asReversed()) {
+         // NavBackStackEntry includes those intended for Graph as well as those for Screen.
+         // This can be distinguished by looking at the NavDestination held by NavBackStackEntry.
+         // Specifically, NavDestination is a base class that has concrete classes such as Graph (ComposeNavGraph) and Screen (Destination), so it should be checked.
+         // To obtain the Behavior for each screen, the NavDestination is checked to ensure it is a Destination.
+         if (entry.destination is Destination) {
+             val behavior = TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP[entry.destination.route]
+             if (behavior != SAME_AS_PARENT) {
+                 return behavior
+             }
+         }
+     }
+     return null
+ }
 ```
 
 ### 3. DeepLinks Handling
@@ -206,45 +221,49 @@ internal interface DeepLinksNavigator {
 **MainNavigator.kt**
 
 ```kotlin
-override fun navigateToBananaBreadMr1GraphFromExternal(clearStack: Boolean) {
-    navController.navigateToBananaBreadMr1Graph(
-        navOptions {
-            if (clearStack) {
-                popUpTo(navController.graph.startDestinationId) {
-                    inclusive = true
-                }
-                launchSingleTop = true
+override fun navigateToBananaBreadMr1FromExternal(clearStack: Boolean) {
+    destinationsNavigator.navigate(BananaBreadMr1RouteDestination) {
+        if (clearStack) {
+            popUpTo(navController.navGraph.startDestination) {
+                inclusive = true
             }
+            launchSingleTop = true
         }
-    )
+    }
 }
 ```
 
 ### 4. Safe Passing of NavArgs
 
-To ensure safe passing of NavArgs, this repository uses type-safe methods for passing arguments during navigation. This reduces errors during screen transitions and argument passing, resulting in more reliable transitions. With Navigation 2.7,
-the following method is used to define functions for screen navigation with type checks.
+In Compose Destinations, you can define arguments for a screen's `@Destination`-annotated Composable function by either specifying the parameters in the function itself or by setting the argument types in the `@Destination` annotation. Compose Destinations will then automatically handle the passing of arguments with the correct types.
 
-**ApplePieNavigation.kt**
+The arguments are stored in `SavedStateHandle`, allowing them to be easily accessed in ViewModels or other components. This makes it convenient to manage state and handle argument passing without needing to write additional boilerplate code. Very handy!
+
+
+**ApplePieMr1Route.kt**
 
 ```kotlin
-fun NavController.navigateToApplePieMr1Route(
-    from: String,
-    navOptions: NavOptions? = null
-) {
-    this.navigate("$applePieMr1NavigationRouteBase/$from", navOptions)
-}
+data class ApplePieMr1Args(
+    val from: String = "unknown",
+)
 
-composable(
-    route = applePieMr1NavigationRoute,
-    arguments = listOf(
-        navArgument(applePieMr1NavigationParamFrom) { defaultValue = "unknown" }
-    ),
-    deepLinks = ...,
-) { entry ->
-    ApplePieMr1Route(
-        from = entry.arguments?.getString(applePieMr1NavigationParamFrom)!!,
-        onClickMoveBananaBreadMr1 = navigateToBananaBreadMr1Graph
+@Destination<ApplePieMr1Graph>(
+    start = true,
+    navArgs = ApplePieMr1Args::class,
+    deepLinks = [
+        DeepLink(
+            uriPattern = "https://com.yurihondo.screentransitionsample/applepie_mr1?from={from}",
+        )
+    ],
+)
+@Composable
+internal fun ApplePieMr1Route(
+    applePieNavigator: ApplePieNavigator,
+    args: ApplePieMr1Args,
+) {
+    ApplePieMr1Screen(
+        from = args.from,
+        onClickMoveBananaBreadMr1 = applePieNavigator::navigateToBananaBreadMr1,
     )
 }
 ```

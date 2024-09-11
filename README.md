@@ -1,6 +1,12 @@
-# Screen Transition Sample
+# Screen Transition Sample for Navigation 2.8
 
-This repository demonstrates various screen transition techniques using Jetpack Compose and Navigation.
+This repository demonstrates various screen transition techniques using Jetpack Compose and Navigation 2.8.0.
+
+## Differences in Navigation 2.8 for this Sample
+
+**NavArgs Type Safety:**
+This sample supports the type-safe argument passing introduced in Navigation 2.8. With the introduction of this feature, route definitions can now be specified as @Serializable objects. As a result, we have updated the definitions of Graphs and Destinations, as well as any related processing (such as in AppState), to accommodate these changes.
+Additionally, in Navigation 2.8, a new method called `#hasRoute` has been added to NavDestination. This method is used to match NavDestination with the Route defined using @Serializable.
 
 ## Features
 
@@ -50,6 +56,13 @@ fun onBack() {
         }
     }
 }
+
+private fun isInStartRoute(): Boolean {
+    val startRouteOnCurrentDest = currentTopLevelDestination.graph().startRouteClass
+    return navHostController.currentBackStackEntry?.destination?.hasRoute(
+        startRouteOnCurrentDest
+    ) ?: false
+}
 ```
 
 This approach ensures smooth transitions between tabs, with each tab's state being preserved independently.
@@ -63,14 +76,15 @@ The visibility of tabs is dynamically controlled based on the navigation destina
 ```kotlin
 companion object {
     private val TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP = mapOf(
-        applePieMr1NavigationRoute to HIDE,
-        bananaBreadMr1NavigationRoute to SAME_AS_PARENT,
+        ApplePieMr1Destination::class to HIDE,
+        BananaBreadMr1Destination::class to SAME_AS_PARENT,
     )
 }
 
 init {
     navHostController.addOnDestinationChangedListener { navController, dest, _ ->
-        val behaviorType = dest.route?.let { route ->
+        val behaviorType = dest.let { dest ->
+            val route = TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP.keys.find { dest.hasRoute(it) }
             TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP[route]
         }
         when (behaviorType) {
@@ -114,7 +128,7 @@ private fun List<NavBackStackEntry>.findActualParentTopLevelNavigationBehavior(
         // Specifically, NavDestination is a base class that has concrete classes such as Graph (ComposeNavGraph) and Screen (Destination), so it should be checked.
         // To obtain the Behavior for each screen, the NavDestination is checked to ensure it is a Destination.
         if (entry.destination is Destination) {
-            val behavior = TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP[entry.destination.route]
+            val behavior = TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP[entry.destination.hasRoute(it)]
             if (behavior != SAME_AS_PARENT) {
                 return behavior
             }
@@ -206,17 +220,15 @@ internal interface DeepLinksNavigator {
 **MainNavigator.kt**
 
 ```kotlin
-override fun navigateToBananaBreadMr1GraphFromExternal(clearStack: Boolean) {
-    navController.navigateToBananaBreadMr1Graph(
-        navOptions {
-            if (clearStack) {
-                popUpTo(navController.graph.startDestinationId) {
-                    inclusive = true
-                }
-                launchSingleTop = true
+override fun navigateToBananaBreadMr1FromExternal(clearStack: Boolean) {
+    navController.navigate(BananaBreadMr1Destination) {
+        if (clearStack) {
+            popUpTo(navController.graph.startDestinationId) {
+                inclusive = true
             }
+            launchSingleTop = true
         }
-    )
+    }
 }
 ```
 
@@ -225,26 +237,28 @@ override fun navigateToBananaBreadMr1GraphFromExternal(clearStack: Boolean) {
 To ensure safe passing of NavArgs, this repository uses type-safe methods for passing arguments during navigation. This reduces errors during screen transitions and argument passing, resulting in more reliable transitions. With Navigation 2.7,
 the following method is used to define functions for screen navigation with type checks.
 
-**ApplePieNavigation.kt**
+**NavRoute.kt**
 
 ```kotlin
-fun NavController.navigateToApplePieMr1Route(
-    from: String,
-    navOptions: NavOptions? = null
-) {
-    this.navigate("$applePieMr1NavigationRouteBase/$from", navOptions)
-}
+@Serializable
+data class ApplePieMr1Destination(
+    @SerialName("from")
+    val from: String = "unknown",
+)
+```
 
-composable(
-    route = applePieMr1NavigationRoute,
-    arguments = listOf(
-        navArgument(applePieMr1NavigationParamFrom) { defaultValue = "unknown" }
-    ),
-    deepLinks = ...,
-) { entry ->
-    ApplePieMr1Route(
-        from = entry.arguments?.getString(applePieMr1NavigationParamFrom)!!,
-        onClickMoveBananaBreadMr1 = navigateToBananaBreadMr1Graph
-    )
-}
+**ApplePieNavigation.kt**
+```
+ composable<ApplePieMr1Destination>(
+     deepLinks = listOf(
+         navDeepLink<ApplePieMr1Destination>(
+             basePath = "https://com.yurihondo.screentransitionsample/applepie_mr1"
+         )
+     ),
+ ) { backStackEntry ->
+     ApplePieMr1Route(
+         from = backStackEntry.toRoute<ApplePieMr1Destination>().from,
+         onClickMoveBananaBreadMr1 = navigateToBananaBreadMr1Graph
+     )
+ }
 ```

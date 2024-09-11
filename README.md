@@ -232,7 +232,7 @@ fun NavController.navigateToApplePieMr1Route(
     from: String,
     navOptions: NavOptions? = null
 ) {
-    this.navigate("$applePieMr1NavigationRoute/$from", navOptions)
+    this.navigate("$applePieMr1NavigationRouteBase/$from", navOptions)
 }
 
 composable(

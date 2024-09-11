@@ -21,7 +21,7 @@ fun NavGraphBuilder.cupcakeGraph(
     ) {
         composable<CupcakeDestination> {
             CupcakeRoute(
-                onNavigateToApplePieMr1 = navigator::navigateToApplePieMr1Graph
+                onNavigateToApplePieMr1 = navigator::navigateToApplePieMr1
             )
         }
     }

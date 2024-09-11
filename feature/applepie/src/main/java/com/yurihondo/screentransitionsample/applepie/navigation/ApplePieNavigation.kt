@@ -35,16 +35,16 @@ fun NavGraphBuilder.applePieGraph(
             ),
         ) {
             ApplePieRoute(
-                onClick = { navController.navigateToApplePieMr1Graph("ApplePie") }
+                onClick = { navController.navigateToApplePieMr1Route("ApplePie") }
             )
         }
         applePieMr1Graph(
-            navigateToBananaBreadMr1Graph = navigator::navigateToBananaBreadMr1Graph,
+            navigateToBananaBreadMr1Graph = navigator::navigateToBananaBreadMr1,
         )
     }
 }
 
-fun NavController.navigateToApplePieMr1Graph(
+fun NavController.navigateToApplePieMr1Route(
     from: String,
     navOptions: NavOptions? = null
 ) {

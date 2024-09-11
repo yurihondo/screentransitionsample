@@ -1,6 +1,7 @@
 # Screen Transition Sample
 
-This repository demonstrates various screen transition techniques using Jetpack Compose and Navigation.
+This repository demonstrates various screen transition techniques using Jetpack Compose and Navigation 2.7.
+Plz clone and run this repository if you try this sample app.
 
 ## Features
 

@@ -33,11 +33,11 @@ fun NavGraphBuilder.applePieGraph(
             ),
         ) {
             ApplePieRoute(
-                onClick = { navController.navigateToApplePieMr1Graph("ApplePie") }
+                onClick = { navController.navigateToApplePieMr1Route("ApplePie") }
             )
         }
         applePieMr1Graph(
-            navigateToBananaBreadMr1Graph = navigator::navigateToBananaBreadMr1Graph,
+            navigateToBananaBreadMr1Graph = navigator::navigateToBananaBreadMr1,
         )
     }
 }
@@ -48,11 +48,11 @@ private const val applePieMr1NavigationParamFrom = "from"
 const val applePieMr1NavigationRoute =
     "$applePieMr1NavigationRouteBase/{$applePieMr1NavigationParamFrom}"
 
-fun NavController.navigateToApplePieMr1Graph(
+fun NavController.navigateToApplePieMr1Route(
     from: String,
     navOptions: NavOptions? = null
 ) {
-    this.navigate("$applePieMr1GraphRoutePattern/$from", navOptions)
+    this.navigate("$applePieMr1NavigationRouteBase/$from", navOptions)
 }
 
 fun NavGraphBuilder.applePieMr1Graph(
@@ -78,4 +78,3 @@ fun NavGraphBuilder.applePieMr1Graph(
         }
     }
 }
-

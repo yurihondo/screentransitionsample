@@ -1,5 +1,5 @@
 package com.yurihondo.screentransitionsample.cupcake.navigation
 
 interface CupcakeNavigator {
-    fun navigateToApplePieMr1Graph(from: String)
+    fun navigateToApplePieMr1(from: String)
 }

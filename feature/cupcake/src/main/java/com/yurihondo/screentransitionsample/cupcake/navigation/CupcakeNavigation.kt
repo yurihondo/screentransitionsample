@@ -23,7 +23,7 @@ fun NavGraphBuilder.cupcakeGraph(
     ) {
         composable(route = cupcakeNavigationRoute) {
             CupcakeRoute(
-                onNavigateToApplePieMr1 = navigator::navigateToApplePieMr1Graph
+                onNavigateToApplePieMr1 = navigator::navigateToApplePieMr1
             )
         }
     }

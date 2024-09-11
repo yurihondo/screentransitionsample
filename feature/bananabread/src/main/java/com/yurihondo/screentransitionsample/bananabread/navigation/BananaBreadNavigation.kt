@@ -26,19 +26,19 @@ fun NavGraphBuilder.bananaBreadGraph(
     ) {
         composable(route = bananaBreadNavigationRoute) {
             BananaBreadRoute(
-                onClickMoveBananaBreadMr1 = navController::navigateToBananaBreadMr1Graph,
-                onClickJumpApplePirMr1 = navigator::navigateToApplePieMr1Graph
+                onClickMoveBananaBreadMr1 = navController::navigateToBananaBreadMr1Route,
+                onClickJumpApplePirMr1 = navigator::navigateToApplePieMr1
             )
         }
         bananaBreadMr1Graph()
     }
 }
 
-const val bananaBreadMr1NavigationRoute = "banana_bread_mr1_route"
 const val bananaBreadMr1GraphRoutePattern = "banana_bread_mr1_graph"
+const val bananaBreadMr1NavigationRoute = "banana_bread_mr1_route"
 
-fun NavController.navigateToBananaBreadMr1Graph(navOptions: NavOptions? = null) {
-    this.navigate(bananaBreadMr1GraphRoutePattern, navOptions)
+fun NavController.navigateToBananaBreadMr1Route(navOptions: NavOptions? = null) {
+    this.navigate(bananaBreadMr1NavigationRoute, navOptions)
 }
 
 fun NavGraphBuilder.bananaBreadMr1Graph(

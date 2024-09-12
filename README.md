@@ -9,6 +9,7 @@ Plz clone and run this repository if you try this sample app.
 2. [Toggling Tab Visibility](#toggling-tab-visibility)
 3. [DeepLinks Handling](#deeplinks-handling)
 4. [Safe Passing of NavArgs](#safe-passing-of-navargs)
+5. [Send results back](#send-results-back)
 
 ### 1. Managing Tab History
 

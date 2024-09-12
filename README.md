@@ -249,3 +249,35 @@ composable(
     )
 }
 ```
+
+### 5. Send results back
+
+In vanilla Navigation Compose, you can pass results back to the previous screen using `BackStackEntry`. This allows for a simple implementation of sending results between screens.
+However, depending on your use case, you may need to adjust when the result is received by observing the `Lifecycle` of the destination.
+
+**ApplePieNavigation.kt**
+
+```
+composable(
+    ...
+) { entry ->
+    val from  = entry.savedStateHandle.get<String>(resultKeyFrom) ?: entry.arguments?.getString(applePieMr1NavigationParamFrom)!!
+    ApplePieMr1Route(
+        from = from,
+        onClickMoveBananaBreadMr1 = navigateToBananaBreadMr1Graph,
+        onNavigateEdit = { navController.navigateToEditRoute(from) }
+    )
+}
+
+composable(
+    route = "$editNavigationRouteBase/{$applePieMr1NavigationParamFrom}",
+) { entry ->
+    EditRoute(
+        from = entry.arguments?.getString(applePieMr1NavigationParamFrom)!!,
+        onDone = {
+            navController.previousBackStackEntry?.savedStateHandle?.set(resultKeyFrom, it)
+            navController.popBackStack()
+        }
+    )
+}
+ ```

@@ -16,11 +16,13 @@ import androidx.compose.ui.unit.dp
 internal fun ApplePieMr1Route(
     from: String,
     onClickMoveBananaBreadMr1: () -> Unit,
+    onNavigateEdit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ApplePieMr1Screen(
         from = from,
         onClickMoveBananaBreadMr1 = onClickMoveBananaBreadMr1,
+        onNavigateEdit = onNavigateEdit,
         modifier = modifier,
     )
 }
@@ -29,6 +31,7 @@ internal fun ApplePieMr1Route(
 private fun ApplePieMr1Screen(
     from: String,
     onClickMoveBananaBreadMr1: () -> Unit,
+    onNavigateEdit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -40,6 +43,10 @@ private fun ApplePieMr1Screen(
         Spacer(modifier = Modifier.height(32.dp))
         Button(onClick = onClickMoveBananaBreadMr1) {
             Text(text = "Jump to Banana Bread MR1")
+        }
+        Spacer(modifier = Modifier.height(32.dp))
+        Button(onClick = onNavigateEdit) {
+            Text(text = "Edit")
         }
     }
 }

@@ -22,4 +22,13 @@ data class ApplePieMr1Destination(
     @SerialName("from")
     val from: String = "unknown",
 )
+
+@Serializable
+data class EditDestination(
+    val from: String = "unknown",
+) {
+    companion object {
+        const  val RESULT_KEY_FROM = "result_key_from"
+    }
+}
 // endregion Destination

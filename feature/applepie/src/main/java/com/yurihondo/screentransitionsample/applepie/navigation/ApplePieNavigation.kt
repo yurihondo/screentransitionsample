@@ -11,8 +11,10 @@ import com.yurihondo.applepie.navigation.ApplePieDestination
 import com.yurihondo.applepie.navigation.ApplePieGraph
 import com.yurihondo.applepie.navigation.ApplePieMr1Destination
 import com.yurihondo.applepie.navigation.ApplePieMr1Graph
+import com.yurihondo.applepie.navigation.EditDestination
 import com.yurihondo.screentransitionsample.applepie.ApplePieMr1Route
 import com.yurihondo.screentransitionsample.applepie.ApplePieRoute
+import com.yurihondo.screentransitionsample.applepie.EditRoute
 
 internal fun NavController.navigateToApplePieGraph(navOptions: NavOptions? = null) {
     this.navigate(ApplePieGraph, navOptions)
@@ -37,12 +39,14 @@ fun NavGraphBuilder.applePieGraph(
             )
         }
         applePieMr1Graph(
+            navController = navController,
             navigateToBananaBreadMr1Graph = navigator::navigateToBananaBreadMr1,
         )
     }
 }
 
 fun NavGraphBuilder.applePieMr1Graph(
+    navController: NavController,
     navigateToBananaBreadMr1Graph: () -> Unit,
 ) {
     navigation<ApplePieMr1Graph>(
@@ -55,9 +59,22 @@ fun NavGraphBuilder.applePieMr1Graph(
                 )
             ),
         ) { backStackEntry ->
+            val from = backStackEntry.savedStateHandle.get<String>(EditDestination.RESULT_KEY_FROM)
+                ?: backStackEntry.toRoute<ApplePieMr1Destination>().from
             ApplePieMr1Route(
-                from = backStackEntry.toRoute<ApplePieMr1Destination>().from,
-                onClickMoveBananaBreadMr1 = navigateToBananaBreadMr1Graph
+                from = from,
+                onClickMoveBananaBreadMr1 = navigateToBananaBreadMr1Graph,
+                onNavigateEdit = { navController.navigate(EditDestination(from)) }
+            )
+        }
+
+        composable<EditDestination> { backStackEntry ->
+            EditRoute(
+                from = backStackEntry.toRoute<EditDestination>().from,
+                onDone = {
+                    navController.previousBackStackEntry?.savedStateHandle?.set(EditDestination.RESULT_KEY_FROM, it)
+                    navController.popBackStack()
+                }
             )
         }
     }

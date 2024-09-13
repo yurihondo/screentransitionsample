@@ -127,11 +127,7 @@ private fun List<NavBackStackEntry>.findActualParentTopLevelNavigationBehavior(
 ```
 
 note:
-The reason why it is possible to detect if a screen transition is due to a back event with the following implementation is because, if we exclude the NavController implementation, the OnDestinationChangedListener callback is executed first, followed by the update of the currentBackStack. Therefore, at the time the callback is received, the currentBackStack has not yet been updated, meaning that the state of the previous screen can be obtained.
-
-As a result, during a normal transition, the destination passed in the callback does not exist when scanning the currentBackStack within the callback. However, if a screen transition occurs due to a back event, the destination passed in the callback will exist in the currentBackStack.
-
-Thus, by scanning the currentBackStack within the OnDestinationChangedListener callback and checking for the presence of the destination, we can determine with certainty that the screen transition was triggered by a back event.
+The reason why it is possible to detect if a screen transition is due to a back event with the following implementation:
 
 ```kotlin
 navHostController.addOnDestinationChangedListener { navController, dest, _ ->
@@ -140,6 +136,37 @@ navHostController.addOnDestinationChangedListener { navController, dest, _ ->
     }
 }
 ```
+
+is because, if we exclude the NavController implementation, the OnDestinationChangedListener callback is executed first, followed by the update of the currentBackStack. Therefore, at the time the callback is received, the currentBackStack has not yet been updated, meaning that the state of the previous screen can be obtained.
+
+**NavController.kt**
+
+```kotlin
+private fun dispatchOnDestinationChanged(): Boolean {
+    ...
+        for (backStackEntry in dispatchList) {
+            // Now call all registered OnDestinationChangedListener instances
+            for (listener in onDestinationChangedListeners) {
+                listener.onDestinationChanged(
+                    this,
+                    backStackEntry.destination,
+                    backStackEntry.arguments
+                )
+            }
+            _currentBackStackEntryFlow.tryEmit(backStackEntry)
+        }
+        _currentBackStack.tryEmit(backQueue.toMutableList())
+        _visibleEntries.tryEmit(populateVisibleEntries())
+    }
+    return lastBackStackEntry != null
+}
+```
+
+As a result, during a normal transition, the destination passed in the callback does not exist when scanning the currentBackStack within the callback. However, if a screen transition occurs due to a back event, the destination passed in the callback will exist in the currentBackStack.
+
+Thus, by scanning the currentBackStack within the OnDestinationChangedListener callback and checking for the presence of the destination, we can determine with certainty that the screen transition was triggered by a back event.
+
+However, this implementation is not highly recommended.
 
 ### 3. DeepLinks Handling
 

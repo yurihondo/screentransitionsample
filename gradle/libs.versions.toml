@@ -1,18 +1,18 @@
 [versions]
 # Plugins
-kotlin = "2.0.20"
-androidGradlePlugin = "8.5.2"
+kotlin = "2.1.21"
+androidGradlePlugin = "8.10.1"
 
 # Libs
-compose-bom = "2024.09.00"
-core = "1.13.1"
-lifecycle = "2.8.5"
-activity = "1.9.2"
+compose-bom = "2025.06.01"
+core = "1.16.0"
+lifecycle = "2.9.1"
+activity = "1.10.1"
 junit = "4.13.2"
 androidx-junit = "1.2.1"
 espresso = "3.6.1"
-navigation = "2.8.0"
-kotlinxSerialization = "1.6.3"
+navigation = "2.9.0"
+kotlinxSerialization = "1.8.1"
 
 
 [libraries]

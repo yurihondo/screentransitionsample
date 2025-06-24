@@ -1,4 +1,9 @@
 [versions]
+# App settings
+targetSdk = "36"
+compileSdk = "36"
+minSdk = "30"
+
 # Plugins
 kotlin = "2.1.21"
 androidGradlePlugin = "8.10.1"
@@ -13,10 +18,12 @@ androidx-junit = "1.2.1"
 espresso = "3.6.1"
 navigation = "2.9.0"
 kotlinxSerialization = "1.8.1"
-
+nav3Core = "1.0.0-alpha04"
+lifecycleViewmodelNav3 = "1.0.0-alpha02"
 
 [libraries]
 # Kotlin
+kotlinxSerializationCore = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 kotlinxSerialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 
 # Compose
@@ -36,8 +43,14 @@ androidxActivity = { module = "androidx.activity:activity-ktx", version.ref = "a
 # Lifecycle
 lifecycleRuntimeKtx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 
-# Navigation
+# Navigation2
 navigationCompose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+
+# Navigation3
+navigation3Runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3Core" }
+navigation3Ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3Core" }
+lifecycleViewmodelNavigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycleViewmodelNav3" }
+
 
 # Test
 junit = { module = "junit:junit", version.ref = "junit" }

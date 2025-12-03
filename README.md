@@ -2,6 +2,14 @@
 
 This repository demonstrates various screen transition techniques using Jetpack Compose and Navigation 3.
 
+## Branches
+
+| Branch | Navigation Library | Description |
+|--------|-------------------|-------------|
+| [`main`](https://github.com/yurihondo/screentransitionsample) | Navigation 3 | Current implementation with Nav3 |
+| [`feature/navigation_v2.8.x`](https://github.com/yurihondo/screentransitionsample/tree/feature/navigation_v2.8.x) | Navigation Compose 2.8 | Type-safe routes with `@Serializable` |
+| [`feature/compose_destinations`](https://github.com/yurihondo/screentransitionsample/tree/feature/compose_destinations) | Compose Destinations | Using compose-destinations library |
+
 ## Migration from Navigation 2.8 to Navigation 3
 
 This project has been migrated from Navigation Compose 2.8 to Navigation 3. Key changes include:

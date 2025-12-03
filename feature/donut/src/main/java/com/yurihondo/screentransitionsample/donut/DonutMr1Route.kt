@@ -2,31 +2,27 @@ package com.yurihondo.screentransitionsample.donut
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
 @Composable
-fun DonutRoute(
-    onNavigateEdit: () -> Unit,
+fun DonutMr1Route(
+    result: String,
     modifier: Modifier = Modifier,
 ) {
-    DonutScreen(
-        onNavigateEdit = onNavigateEdit,
+    DonutMr1Screen(
+        result = result,
         modifier = modifier,
     )
 }
 
 @Composable
-private fun DonutScreen(
-    onNavigateEdit: () -> Unit,
+private fun DonutMr1Screen(
+    result: String,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -36,10 +32,7 @@ private fun DonutScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(text = "Donut")
-        Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = onNavigateEdit) {
-            Text(text = "Edit")
-        }
+        Text(text = "Donut MR1")
+        Text(text = "Result: $result")
     }
 }

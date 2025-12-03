@@ -22,11 +22,14 @@ import com.yurihondo.screentransitionsample.bananabread.BananaBreadMr1Route
 import com.yurihondo.screentransitionsample.bananabread.BananaBreadRoute
 import com.yurihondo.screentransitionsample.core.ui.AppState
 import com.yurihondo.screentransitionsample.cupcake.CupcakeRoute
+import com.yurihondo.screentransitionsample.donut.DonutMr1Route
 import com.yurihondo.screentransitionsample.donut.DonutRoute
 import com.yurihondo.screentransitionsample.donut.navigation.Donut
+import com.yurihondo.screentransitionsample.donut.navigation.DonutMr1
 import com.yurihondo.screentransitionsample.eclair.EclairRoute
 
 private const val EDIT_RESULT_KEY = "edit_result"
+private const val DONUT_EDIT_RESULT_KEY = "donut_edit_result"
 
 @Composable
 internal fun createMainEntryProvider(
@@ -71,8 +74,14 @@ internal fun createMainEntryProvider(
         EditRoute(
             from = key.from,
             onDone = { result ->
+                // Determine which result key to use based on source
+                val resultKey = if (key.from == "Donut") {
+                    DONUT_EDIT_RESULT_KEY
+                } else {
+                    EDIT_RESULT_KEY
+                }
                 // Set result to ResultStore before navigating back
-                resultStore.setResult(result, EDIT_RESULT_KEY)
+                resultStore.setResult(result, resultKey)
                 appState.onBack {}
             }
         )
@@ -99,7 +108,25 @@ internal fun createMainEntryProvider(
 
     // Donut feature
     entry<Donut> {
-        DonutRoute()
+        // Listen for edit result from Donut's Edit flow
+        val donutEditResult by resultStore.getResultState<String>(DONUT_EDIT_RESULT_KEY)
+
+        // When result is available, navigate to DonutMr1
+        LaunchedEffect(donutEditResult) {
+            if (donutEditResult != null) {
+                val result = donutEditResult!!
+                resultStore.removeResult(DONUT_EDIT_RESULT_KEY)
+                appState.navigate(DonutMr1(result))
+            }
+        }
+
+        DonutRoute(
+            onNavigateEdit = { appState.navigate(Edit("Donut")) }
+        )
+    }
+
+    entry<DonutMr1> { key ->
+        DonutMr1Route(result = key.result)
     }
 
     // Eclair feature

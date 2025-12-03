@@ -5,3 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data object Donut : NavKey
+
+@Serializable
+data class DonutMr1(
+    val result: String,
+) : NavKey

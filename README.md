@@ -21,35 +21,71 @@ This repository demonstrates various screen transition techniques using Jetpack 
 
 ### 1. Managing Tab History
 
-Each tab has its own back stack managed by `NavigationState`. When a tab is selected, the corresponding back stack is switched, and the previous state is restored. Tab selection history is managed via `LifoUniqueQueue` so that pressing back navigates to the previously selected tab.
+Each tab has its own back stack managed by `NavigationState`, following the [nav3-recipes multiplestacks](https://github.com/android/nav3-recipes/tree/main/app/src/main/java/com/example/nav3recipes/multiplestacks) pattern. Back stacks survive configuration changes and process death via `rememberNavBackStack`. Tab selection history is managed via `LifoUniqueQueue` so that pressing back navigates to the previously selected tab.
 
 **NavigationState.kt**
 
 ```kotlin
-@Stable
-internal class NavigationState(
-    val startRoute: NavKey,
-    val topLevelRoutes: Set<NavKey>,
-) {
-    private val _topLevelRoute = mutableStateOf(startRoute)
-    val topLevelRoute: NavKey get() = _topLevelRoute.value
+@Composable
+fun rememberNavigationState(
+    startRoute: NavKey,
+    topLevelRoutes: Set<NavKey>,
+): NavigationState {
+    val topLevelRoute = rememberSerializable(
+        startRoute, topLevelRoutes,
+        serializer = MutableStateSerializer(NavKeySerializer())
+    ) { mutableStateOf(startRoute) }
 
-    val backStacks: Map<NavKey, SnapshotStateList<NavKey>> =
-        topLevelRoutes.associateWith { mutableStateListOf(it) }
+    val backStacks = topLevelRoutes.associateWith { key -> rememberNavBackStack(key) }
 
-    fun currentBackStack(): List<NavKey> = backStacks[topLevelRoute] ?: emptyList()
-
-    fun switchTopLevelRoute(route: NavKey) {
-        _topLevelRoute.value = route
+    return remember(startRoute, topLevelRoutes) {
+        NavigationState(topLevelRoute, backStacks)
     }
 }
+
+@Stable
+class NavigationState(
+    topLevelRoute: MutableState<NavKey>,
+    val backStacks: Map<NavKey, NavBackStack<NavKey>>,
+) {
+    var topLevelRoute: NavKey by topLevelRoute
+    fun currentBackStack(): List<NavKey> = backStacks[topLevelRoute] ?: emptyList()
+}
+
+@Composable
+fun NavigationState.toEntries(
+    entryProvider: (NavKey) -> NavEntry<NavKey>
+): SnapshotStateList<NavEntry<NavKey>> {
+    val decoratedEntries = backStacks.mapValues { (_, stack) ->
+        rememberDecoratedNavEntries(
+            backStack = stack,
+            entryDecorators = listOf(
+                rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
+                rememberViewModelStoreNavEntryDecorator(),
+            ),
+            entryProvider = entryProvider
+        )
+    }
+    return listOf(topLevelRoute)
+        .flatMap { decoratedEntries[it] ?: emptyList() }
+        .toMutableStateList()
+}
+```
+
+**MainNavDisplay.kt**
+
+```kotlin
+NavDisplay(
+    entries = appState.navigationState.toEntries(entryProvider),
+    onBack = onBack,
+)
 ```
 
 **AppState.kt**
 
 ```kotlin
 fun onSelectTopLevelDestination(destination: TopLevelDestination) {
-    navigationState.switchTopLevelRoute(destination.startRoute)
+    navigationState.topLevelRoute = destination.startRoute
     coreData.topLevelDestinationBackQueue.add(destination)
     coreData.currentTopLevelDestination = destination
 }
@@ -58,7 +94,7 @@ fun onBack(finishActivity: () -> Unit) {
     if (navigationState.isAtStartRoute()) {
         coreData.topLevelDestinationBackQueue.remove()
         coreData.topLevelDestinationBackQueue.element()?.let { dest ->
-            navigationState.switchTopLevelRoute(dest.startRoute)
+            navigationState.topLevelRoute = dest.startRoute
             coreData.currentTopLevelDestination = dest
         } ?: finishActivity()
     } else {

@@ -59,8 +59,9 @@ dependencies {
     // Lifecycle
     implementation(libs.lifecycleRuntimeKtx)
 
-    // Navigation
-    implementation(libs.navigationCompose)
+    // Navigation3
+    implementation(libs.navigation3Runtime)
+    implementation(libs.navigation3Ui)
 
     // Test
     testImplementation(libs.junit)

@@ -32,6 +32,10 @@ android {
 }
 
 dependencies {
-    // Navigation
-    implementation(libs.navigationCompose)
+    // Navigation3
+    implementation(libs.navigation3Runtime)
+    implementation(libs.navigation3Ui)
+
+    // Kotlin Serialization
+    implementation(libs.kotlinxSerializationCore)
 }

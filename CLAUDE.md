@@ -24,31 +24,69 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
-This is an Android sample app demonstrating Navigation Compose 2.8+ patterns with type-safe routes and multi-module architecture.
+This is an Android sample app demonstrating Navigation 3 patterns with type-safe routes and multi-module architecture.
 
 ### Module Structure
 
-- **app**: Main application module containing `MainActivity`, `AppState`, navigation host, and theme
-- **core/ui**: Shared navigation interfaces (`GraphSpec`, `Destination`)
+- **app**: Main application module containing `MainActivity`, `AppState`, `NavigationState`, navigation display, and theme
+- **core/ui**: Shared UI components
 - **core/common**: Common utilities and extensions
 - **feature/**: Feature modules (applepie, bananabread, cupcake, donut, eclair) - each represents a tab
 
-### Navigation Architecture
+### Navigation Architecture (Navigation 3)
 
-Each feature module defines:
-1. **NavRoute.kt**: `@Serializable` route definitions for type-safe navigation (e.g., `ApplePieDestination`, `ApplePieMr1Destination`)
-2. **GraphSpec.kt**: Implements `GraphSpec` interface to define the navigation graph entry point and start route
-3. **Navigation.kt**: Extension function on `NavGraphBuilder` to register composable destinations
+Navigation 3 uses a flat structure with `NavKey` and `EntryProvider`:
 
-The `AppState` class in `app/src/main/java/.../core/ui/AppState.kt` manages:
-- Tab history via `LifoUniqueQueue` for back navigation between tabs
-- Bottom navigation visibility based on `TopLevelDestinationBehavior` (HIDE, SAME_AS_PARENT, or default show)
-- Navigation to top-level destinations with state preservation
+**Route definitions** (`feature/*/navigation/NavRoute.kt`):
+```kotlin
+@Serializable
+data object ApplePie : NavKey
+
+@Serializable
+data class ApplePieMr1(val from: String) : NavKey
+```
+
+**Entry Provider** (`app/.../navigation/MainEntryProvider.kt`):
+```kotlin
+entryProvider<NavKey> {
+    entry<ApplePie> { ApplePieRoute(...) }
+    entry<ApplePieMr1> { key -> ApplePieMr1Route(from = key.from, ...) }
+}
+```
+
+**Navigation Display** (`app/.../navigation/MainNavDisplay.kt`):
+```kotlin
+NavDisplay(
+    backStack = appState.navigationState.currentBackStack(),
+    entryProvider = entryProvider,
+    onBack = onBack,
+)
+```
+
+### State Management
+
+- **NavigationState**: Manages multiple back stacks for each top-level destination
+- **AppState**: Coordinates navigation, tab history via `LifoUniqueQueue`, and bottom navigation visibility
+- **ResultStore**: Passes results between screens using `CompositionLocal` (nav3-recipes pattern)
 
 ### Key Patterns
 
-**Type-safe routes**: Routes use `@Serializable` data classes/objects. Navigate with the route object, retrieve args via `backStackEntry.toRoute<RouteType>()`.
+**Type-safe routes**: Routes implement `NavKey` interface with `@Serializable` annotation.
 
-**Sending results back**: Use `savedStateHandle` on the previous back stack entry to pass results between screens.
+**Result passing**: Use `ResultStore` with `LaunchedEffect` to pass results between screens:
+```kotlin
+// Sender
+resultStore.setResult(result, KEY)
+appState.onBack {}
 
-**Deep links**: Custom handling via `DeepLinksActivity` → `MainActivity` for complex scenarios beyond standard Navigation deep link support.
+// Receiver
+val result by resultStore.getResultState<String>(KEY)
+LaunchedEffect(result) {
+    if (result != null) {
+        consumedResult = result
+        resultStore.removeResult(KEY)
+    }
+}
+```
+
+**Deep links**: Custom handling via `DeepLinksActivity` → `MainActivity` for complex scenarios.

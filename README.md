@@ -1,211 +1,121 @@
-# Screen Transition Sample for Navigation 2.8
+# Screen Transition Sample for Navigation 3
 
-This repository demonstrates various screen transition techniques using Jetpack Compose and Navigation 2.8.0.
-Plz clone and run this repository if you try this sample app.
+This repository demonstrates various screen transition techniques using Jetpack Compose and Navigation 3.
 
-## Differences in Navigation 2.8 for this Sample
+## Migration from Navigation 2.8 to Navigation 3
 
-**NavArgs Type Safety:**
-This sample supports the type-safe argument passing introduced in Navigation 2.8. With the introduction of this feature, route definitions can now be specified as @Serializable objects. As a result, we have updated the definitions of Graphs and Destinations, as well as any related processing (such as in AppState), to accommodate these changes.
-Additionally, in Navigation 2.8, a new method called `#hasRoute` has been added to NavDestination. This method is used to match NavDestination with the Route defined using @Serializable.
+This project has been migrated from Navigation Compose 2.8 to Navigation 3. Key changes include:
+
+| Navigation 2.8 | Navigation 3 |
+|----------------|--------------|
+| `NavHostController` | `NavigationState` (custom) |
+| `NavHost` | `NavDisplay` |
+| `NavGraphBuilder.composable<T>` | `entryProvider { entry<T> }` |
+| Nested graphs (`navigation<T>`) | Flat structure |
+| `savedStateHandle` for results | `ResultStore` with `CompositionLocal` |
+| `*Destination` suffix | Simple names (`ApplePie`, etc.) |
 
 ## Features
 
-1. [Managing Tab History](#managing-tab-history)
-2. [Toggling Tab Visibility](#toggling-tab-visibility)
-3. [DeepLinks Handling](#deeplinks-handling)
-4. [Safe Passing of NavArgs](#safe-passing-of-navargs)
-5. [Send results back](#send-results-back)
+1. [Managing Tab History](#1-managing-tab-history)
+2. [Toggling Tab Visibility](#2-toggling-tab-visibility)
+3. [DeepLinks Handling](#3-deeplinks-handling)
+4. [Safe Passing of NavArgs](#4-safe-passing-of-navargs)
+5. [Send results back](#5-send-results-back)
 
 ### 1. Managing Tab History
 
-In this sample, each tab has its own dedicated navigation graph. When a tab is selected, the corresponding graph is switched, and the backstack for that tab is restored. Additionally, tab selection history is managed so that you can navigate back to the previously selected tab by pressing the back button.
-The following code is related.
-`topLevelDestinationBackQueue` manages the tab history.
+Each tab has its own back stack managed by `NavigationState`. When a tab is selected, the corresponding back stack is switched, and the previous state is restored. Tab selection history is managed via `LifoUniqueQueue` so that pressing back navigates to the previously selected tab.
+
+**NavigationState.kt**
+
+```kotlin
+@Stable
+internal class NavigationState(
+    val startRoute: NavKey,
+    val topLevelRoutes: Set<NavKey>,
+) {
+    private val _topLevelRoute = mutableStateOf(startRoute)
+    val topLevelRoute: NavKey get() = _topLevelRoute.value
+
+    val backStacks: Map<NavKey, SnapshotStateList<NavKey>> =
+        topLevelRoutes.associateWith { mutableStateListOf(it) }
+
+    fun currentBackStack(): List<NavKey> = backStacks[topLevelRoute] ?: emptyList()
+
+    fun switchTopLevelRoute(route: NavKey) {
+        _topLevelRoute.value = route
+    }
+}
+```
 
 **AppState.kt**
 
 ```kotlin
 fun onSelectTopLevelDestination(destination: TopLevelDestination) {
-    navigateToTopLevelDestination(destination)
+    navigationState.switchTopLevelRoute(destination.startRoute)
     coreData.topLevelDestinationBackQueue.add(destination)
+    coreData.currentTopLevelDestination = destination
 }
 
-private fun navigateToTopLevelDestination(destination: TopLevelDestination) {
-    with(destination.graph()) {
-        val option = navOptions {
-            popUpTo(navHostController.graph.findStartDestination().id) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-        navHostController.navigate(option)
-    }
-}
-
-fun onBack() {
-    if (isInStartRoute()) {
-        // Remove current BackStack from queue and check next one.
-        coreData. topLevelDestinationBackQueue.remove()
+fun onBack(finishActivity: () -> Unit) {
+    if (navigationState.isAtStartRoute()) {
+        coreData.topLevelDestinationBackQueue.remove()
         coreData.topLevelDestinationBackQueue.element()?.let { dest ->
-            navigateToTopLevelDestination(dest)
+            navigationState.switchTopLevelRoute(dest.startRoute)
             coreData.currentTopLevelDestination = dest
-        } ?: navHostController.context.findActivity().finish()
+        } ?: finishActivity()
     } else {
-        if (navHostController.popBackStack().not()) {
-            navHostController.context.findActivity().finish()
-        }
+        navigationState.popBackStack()
     }
-}
-
-private fun isInStartRoute(): Boolean {
-    val startRouteOnCurrentDest = currentTopLevelDestination.graph().startRouteClass
-    return navHostController.currentBackStackEntry?.destination?.hasRoute(
-        startRouteOnCurrentDest
-    ) ?: false
 }
 ```
 
-This approach ensures smooth transitions between tabs, with each tab's state being preserved independently.
-
 ### 2. Toggling Tab Visibility
 
-The visibility of tabs is dynamically controlled based on the navigation destination. Each destination defines whether the tab bar should be displayed, and the tab bar is toggled accordingly as the user navigates between different screens.
+The visibility of the bottom navigation bar is dynamically controlled based on the current destination. Each destination can define its visibility behavior.
 
 **AppState.kt**
 
 ```kotlin
 companion object {
     private val TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP = mapOf(
-        ApplePieMr1Destination::class to HIDE,
-        BananaBreadMr1Destination::class to SAME_AS_PARENT,
+        ApplePieMr1::class to HIDE,
+        BananaBreadMr1::class to SAME_AS_PARENT,
     )
 }
 
-init {
-    navHostController.addOnDestinationChangedListener { navController, dest, _ ->
-        val behaviorType = dest.let { dest ->
-            val route = TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP.keys.find { dest.hasRoute(it) }
-            TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP[route]
+val shouldShowNavigation: Boolean by derivedStateOf {
+    val currentRoute = navigationState.backStacks[navigationState.topLevelRoute]?.lastOrNull()
+    currentRoute?.let { route ->
+        when (TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP[route::class]) {
+            HIDE -> false
+            SAME_AS_PARENT -> shouldShowNavigationState
+            else -> true
         }
-        when (behaviorType) {
-            HIDE -> hideNavigation()
-            SAME_AS_PARENT -> {
-                val isBackEventDetected = navController.currentBackStack.value.any { entry ->
-                    entry == navController.currentBackStackEntry
-                }
-                if (isBackEventDetected) {
-                    navController.currentBackStackEntry?.let { entry ->
-                        when (navController.currentBackStack.value
-                            .findActualParentTopLevelNavigationBehavior(entry)
-                        ) {
-                            HIDE -> hideNavigation()
-                            else -> showNavigation()
-                        }
-                    }
-                } else {
-                    Unit // NOP
-                }
-            }
-            else -> showNavigation()
-        }
-    }
-}
-
-/**
- * Find the actual top level navigation (bottom navigation / navigation rail) behavior (hide or show)
- * for [SAME_AS_PARENT] type, by iterating the back stack entries (ancestor screens).
- */
-private fun List<NavBackStackEntry>.findActualParentTopLevelNavigationBehavior(
-    target: NavBackStackEntry
-): TopLevelDestinationBehavior? {
-    val targetIndex = indexOf(target)
-    if (targetIndex == -1) return null // not found
-    // Take the entries up to 'targetIndex' and reverse the order.
-    // Reverse the order to check entries from the target index backwards, to find the behavior of parent entries.
-    for (entry in take(targetIndex).asReversed()) {
-        // NavBackStackEntry includes those intended for Graph as well as those for Screen.
-        // This can be distinguished by looking at the NavDestination held by NavBackStackEntry.
-        // Specifically, NavDestination is a base class that has concrete classes such as Graph (ComposeNavGraph) and Screen (Destination), so it should be checked.
-        // To obtain the Behavior for each screen, the NavDestination is checked to ensure it is a Destination.
-        if (entry.destination is Destination) {
-            val behavior = TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP[entry.destination.hasRoute(it)]
-            if (behavior != SAME_AS_PARENT) {
-                return behavior
-            }
-        }
-    }
-    return null
+    } ?: true
 }
 ```
-
-note:
-The reason why it is possible to detect if a screen transition is due to a back event with the following implementation:
-
-```kotlin
-navHostController.addOnDestinationChangedListener { navController, dest, _ ->
-    val isBackEventDetected = navController.currentBackStack.value.any { entry ->
-        entry == navController.currentBackStackEntry
-    }
-}
-```
-
-is because, if we exclude the NavController implementation, the OnDestinationChangedListener callback is executed first, followed by the update of the currentBackStack. Therefore, at the time the callback is received, the currentBackStack has not yet been updated, meaning that the state of the previous screen can be obtained.
-
-**NavController.kt**
-
-```kotlin
-private fun dispatchOnDestinationChanged(): Boolean {
-    ...
-        for (backStackEntry in dispatchList) {
-            // Now call all registered OnDestinationChangedListener instances
-            for (listener in onDestinationChangedListeners) {
-                listener.onDestinationChanged(
-                    this,
-                    backStackEntry.destination,
-                    backStackEntry.arguments
-                )
-            }
-            _currentBackStackEntryFlow.tryEmit(backStackEntry)
-        }
-        _currentBackStack.tryEmit(backQueue.toMutableList())
-        _visibleEntries.tryEmit(populateVisibleEntries())
-    }
-    return lastBackStackEntry != null
-}
-```
-
-As a result, during a normal transition, the destination passed in the callback does not exist when scanning the currentBackStack within the callback. However, if a screen transition occurs due to a back event, the destination passed in the callback will exist in the currentBackStack.
-
-Thus, by scanning the currentBackStack within the OnDestinationChangedListener callback and checking for the presence of the destination, we can determine with certainty that the screen transition was triggered by a back event.
-
-However, this implementation is not highly recommended.
 
 ### 3. DeepLinks Handling
 
-This sample project supports both basic DeepLink handling using the standard Navigation Compose mechanism and special cases through a custom DeepLinksActivity. By using DeepLinksActivity, it is possible to handle specific cases, such as modifying the way screens are stacked based on the parameters in the DeepLink, which the standard behavior cannot cover.
-The following code is related.
+This sample supports DeepLink handling through a custom `DeepLinksActivity`. Navigation 3 does not have built-in deep link support, so custom handling is used.
 
 **DeepLinksActivity.kt**
 
 ```kotlin
 class DeepLinksActivity : ComponentActivity() {
-
     private fun handleIntent(intent: Intent) {
         val uri = intent.data ?: return
         when (uri.scheme) {
             CUSTOM_URI_SCHEME -> {
                 when (uri.authority) {
                     AUTHORITY_SHOW_BANANA_BREAD_MR1 -> {
-                        val exitApp = uri.getBooleanQueryParameter(EXIT_APP, false)
                         startActivity(
                             MainActivity.createIntentToShowBananaBreadMr1(
-                                activityContext = this@DeepLinksActivity,
-                                clearStack = exitApp,
-                            ).apply {
-                                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            }
+                                activityContext = this,
+                                clearStack = uri.getBooleanQueryParameter(EXIT_APP, false),
+                            )
                         )
                     }
                 }
@@ -215,124 +125,83 @@ class DeepLinksActivity : ComponentActivity() {
 }
 ```
 
-**MainActivity.kt**
-
-```kotlin
-class MainActivity : ComponentActivity() {
-    companion object {
-        fun createIntentToShowBananaBreadMr1(activityContext: Context, clearStack: Boolean): Intent {
-            return Intent(activityContext, MainActivity::class.java).apply {
-                action = DeepLinksNavigator.ACTION_SHOW_BANANA_BREAD_MR1
-                putExtra(DeepLinksNavigator.KEY_CLEAR_STACK, clearStack)
-            }
-        }
-    }
-}
-```
-
-**DeepLinksNavigator.kt**
-
-```kotlin
-internal interface DeepLinksNavigator {
-
-    companion object {
-        // actions
-        const val ACTION_SHOW_BANANA_BREAD_MR1 = "com.yurihondo.screentransitionsample.action.SHOW_BANANA_BREAD_MR1"
-
-        // keys
-        const val KEY_CLEAR_STACK = "clear_stack"
-    }
-
-    fun handleDeepLinksIfNeeded(intent: Intent): Boolean {
-        var consumed = true
-        when (intent.action) {
-            ACTION_SHOW_BANANA_BREAD_MR1 -> {
-                val clearStack = intent.getBooleanExtra(KEY_CLEAR_STACK, false)
-                navigateToBananaBreadMr1GraphFromExternal(clearStack)
-            }
-            else -> {
-                consumed = false
-            }
-        }
-        return consumed
-    }
-
-    fun navigateToBananaBreadMr1GraphFromExternal(clearStack: Boolean)
-}
-```
-
-**MainNavigator.kt**
-
-```kotlin
-override fun navigateToBananaBreadMr1FromExternal(clearStack: Boolean) {
-    navController.navigate(BananaBreadMr1Destination) {
-        if (clearStack) {
-            popUpTo(navController.graph.startDestinationId) {
-                inclusive = true
-            }
-            launchSingleTop = true
-        }
-    }
-}
-```
-
 ### 4. Safe Passing of NavArgs
 
-In Compose Destinations, arguments are passed using `@Serializable` Route objects. When navigating, you pass the Route object as an argument, and on the receiving side, the `BackStackEntry` has a `#toRoute` function that allows you to retrieve the Route object. 
-It’s important to note that `#toRoute` requires you to specify the type of the Route object. If the type is incorrect, it will result in a runtime crash, so be sure to carefully match the type when retrieving arguments.
+In Navigation 3, route arguments are passed using `@Serializable` classes that implement `NavKey`. When navigating, pass the route object directly, and receive it in the entry lambda.
 
 **NavRoute.kt**
 
 ```kotlin
 @Serializable
-data class ApplePieMr1Destination(
+data class ApplePieMr1(
     @SerialName("from")
     val from: String = "unknown",
-)
+) : NavKey
 ```
 
-**ApplePieNavigation.kt**
-```
- composable<ApplePieMr1Destination>(
-     deepLinks = listOf(
-         navDeepLink<ApplePieMr1Destination>(
-             basePath = "https://com.yurihondo.screentransitionsample/applepie_mr1"
-         )
-     ),
- ) { backStackEntry ->
-     ApplePieMr1Route(
-         from = backStackEntry.toRoute<ApplePieMr1Destination>().from,
-         onClickMoveBananaBreadMr1 = navigateToBananaBreadMr1Graph
-     )
- }
+**MainEntryProvider.kt**
+
+```kotlin
+entry<ApplePieMr1> { key ->
+    ApplePieMr1Route(
+        from = key.from,  // Type-safe access
+        onClickMoveBananaBreadMr1 = { ... }
+    )
+}
 ```
 
 ### 5. Send results back
 
-In vanilla Navigation Compose, you can pass results back to the previous screen using `BackStackEntry`. This allows for a simple implementation of sending results between screens.
-However, depending on your use case, you may need to adjust when the result is received by observing the `Lifecycle` of the destination. 
+Navigation 3 recommends using a state-based approach for passing results between screens. This sample uses `ResultStore` with `CompositionLocal`, following the [nav3-recipes](https://github.com/android/nav3-recipes) pattern.
 
-**ApplePieNavigation.kt**
+**ResultStore.kt**
 
-```
-composable<ApplePieMr1Destination>(
-    ...
-) { backStackEntry ->
-    val from = backStackEntry.savedStateHandle.get<String>(EditDestination.RESULT_KEY_FROM)
-        ?: backStackEntry.toRoute<ApplePieMr1Destination>().from
-    ApplePieMr1Route(
-        from = from,
-        onClickMoveBananaBreadMr1 = navigateToBananaBreadMr1Graph,
-        onNavigateEdit = { navController.navigate(EditDestination(from)) }
-    )
+```kotlin
+val LocalResultStore = staticCompositionLocalOf<ResultStore> { error("No ResultStore") }
+
+class ResultStore {
+    fun <T> getResultState(key: String): State<T?>
+    fun setResult(result: Any?, key: String)
+    fun removeResult(key: String)
 }
-composable<EditDestination> { backStackEntry ->
+```
+
+**MainEntryProvider.kt**
+
+```kotlin
+entry<ApplePieMr1> { key ->
+    val editResult by resultStore.getResultState<String>(EDIT_RESULT_KEY)
+    var consumedResult by remember { mutableStateOf<String?>(null) }
+
+    // Consume result via LaunchedEffect (not during composition)
+    LaunchedEffect(editResult) {
+        if (editResult != null) {
+            consumedResult = editResult
+            resultStore.removeResult(EDIT_RESULT_KEY)
+        }
+    }
+
+    val currentFrom = consumedResult ?: key.from
+    ApplePieMr1Route(from = currentFrom, ...)
+}
+
+entry<Edit> { key ->
     EditRoute(
-        from = backStackEntry.toRoute<EditDestination>().from,
-        onDone = {
-            navController.previousBackStackEntry?.savedStateHandle?.set(EditDestination.RESULT_KEY_FROM, it)
-            navController.popBackStack()
+        from = key.from,
+        onDone = { result ->
+            resultStore.setResult(result, EDIT_RESULT_KEY)
+            appState.onBack {}
         }
     )
 }
 ```
+
+**Key points:**
+- Use `LaunchedEffect` to consume results asynchronously (not during composition)
+- Use `remember` to hold the consumed result locally
+- Clear the result from the store after capturing it
+
+## References
+
+- [Navigation 3 Recipes](https://github.com/android/nav3-recipes)
+- [Navigation 3 Migration Guide](https://github.com/android/nav3-recipes/blob/main/docs/migration-guide.md)

@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import com.yurihondo.applepie.navigation.ApplePie
@@ -23,6 +24,7 @@ import com.yurihondo.screentransitionsample.bananabread.BananaBreadRoute
 import com.yurihondo.screentransitionsample.core.ui.AppState
 import com.yurihondo.screentransitionsample.cupcake.CupcakeRoute
 import com.yurihondo.screentransitionsample.donut.DonutMr1Route
+import com.yurihondo.screentransitionsample.donut.DonutMr1ViewModel
 import com.yurihondo.screentransitionsample.donut.DonutRoute
 import com.yurihondo.screentransitionsample.donut.navigation.Donut
 import com.yurihondo.screentransitionsample.donut.navigation.DonutMr1
@@ -126,7 +128,10 @@ internal fun createMainEntryProvider(
     }
 
     entry<DonutMr1> { key ->
-        DonutMr1Route(result = key.result)
+        val viewModel = viewModel<DonutMr1ViewModel> {
+            DonutMr1ViewModel(key)
+        }
+        DonutMr1Route(result = viewModel.result)
     }
 
     // Eclair feature

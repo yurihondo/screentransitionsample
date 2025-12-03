@@ -28,8 +28,7 @@ internal fun MainNavDisplay(
         val entryProvider = createMainEntryProvider(appState, mainNavigator)
 
         NavDisplay(
-            backStack = appState.navigationState.currentBackStack(),
-            entryProvider = entryProvider,
+            entries = appState.navigationState.toEntries(entryProvider),
             modifier = modifier,
             onBack = onBack,
         )

@@ -15,14 +15,13 @@ import com.yurihondo.bananabread.navigation.BananaBread
 import com.yurihondo.bananabread.navigation.BananaBreadMr1
 import com.yurihondo.cupcake.navigation.Cupcake
 import com.yurihondo.eclair.navigation.Eclair
-import com.yurihondo.screentransitionsample.core.common.extension.findActivity
 import com.yurihondo.screentransitionsample.donut.navigation.Donut
 import com.yurihondo.screentransitionsample.navigation.LifoUniqueQueue
 import com.yurihondo.screentransitionsample.navigation.NavigationState
 import com.yurihondo.screentransitionsample.navigation.TopLevelDestination
-import com.yurihondo.screentransitionsample.navigation.TopLevelDestinationBehavior
 import com.yurihondo.screentransitionsample.navigation.TopLevelDestinationBehavior.HIDE
 import com.yurihondo.screentransitionsample.navigation.TopLevelDestinationBehavior.SAME_AS_PARENT
+import com.yurihondo.screentransitionsample.navigation.rememberNavigationState
 
 @Stable
 internal class AppState(
@@ -32,14 +31,6 @@ internal class AppState(
 
     companion object {
         private val DEFAULT_DESTINATION = TopLevelDestination.APPLE_PIE
-
-        private val TOP_LEVEL_ROUTES = setOf<NavKey>(
-            ApplePie,
-            BananaBread,
-            Cupcake,
-            Donut,
-            Eclair,
-        )
 
         internal val TOP_LEVEL_NAVIGATION_BEHAVIOR_MAP = mapOf(
             ApplePieMr1::class to HIDE,
@@ -65,7 +56,7 @@ internal class AppState(
     }
 
     fun onSelectTopLevelDestination(destination: TopLevelDestination) {
-        navigationState.switchTopLevelRoute(destination.startRoute)
+        navigationState.topLevelRoute = destination.startRoute
         coreData.topLevelDestinationBackQueue.add(destination)
         coreData.currentTopLevelDestination = destination
     }
@@ -80,7 +71,7 @@ internal class AppState(
             // At start of current tab - check tab history
             coreData.topLevelDestinationBackQueue.remove()
             coreData.topLevelDestinationBackQueue.element()?.let { dest ->
-                navigationState.switchTopLevelRoute(dest.startRoute)
+                navigationState.topLevelRoute = dest.startRoute
                 coreData.currentTopLevelDestination = dest
                 showNavigation()
             } ?: finishActivity()
@@ -156,16 +147,12 @@ internal class AppStateCoreData(
 internal fun rememberAppState(): AppState {
     val coreData = rememberSaveable(saver = AppStateCoreData.Saver) { AppStateCoreData() }
 
-    val topLevelRoutes = remember {
-        setOf<NavKey>(ApplePie, BananaBread, Cupcake, Donut, Eclair)
-    }
+    val topLevelRoutes = setOf<NavKey>(ApplePie, BananaBread, Cupcake, Donut, Eclair)
 
-    val navigationState = remember {
-        NavigationState(
-            startRoute = coreData.currentTopLevelDestination.startRoute,
-            topLevelRoutes = topLevelRoutes,
-        )
-    }
+    val navigationState = rememberNavigationState(
+        startRoute = coreData.currentTopLevelDestination.startRoute,
+        topLevelRoutes = topLevelRoutes,
+    )
 
     return remember(coreData, navigationState) {
         AppState(

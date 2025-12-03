@@ -9,15 +9,16 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.compose.rememberNavController
-import com.yurihondo.screentransitionsample.navigation.MainNavHost
+import androidx.compose.ui.platform.LocalContext
+import com.yurihondo.screentransitionsample.core.common.extension.findActivity
+import com.yurihondo.screentransitionsample.navigation.MainNavDisplay
 
 @Composable
 internal fun App(
-    appState: AppState = rememberAppState(
-        navHostController = rememberNavController(),
-    )
+    appState: AppState = rememberAppState()
 ) {
+    val context = LocalContext.current
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background,
@@ -35,9 +36,9 @@ internal fun App(
             contentColor = MaterialTheme.colorScheme.onBackground,
             contentWindowInsets = WindowInsets(0, 0, 0, 0),
         ) { paddingValues ->
-            MainNavHost(
-                navHostController = appState.navHostController,
-                onBack = appState::onBack,
+            MainNavDisplay(
+                appState = appState,
+                onBack = { appState.onBack { context.findActivity().finish() } },
                 modifier = Modifier.padding(paddingValues),
                 onHandleIntentForDeepLink = appState::onHandleDeepLinksIntent,
             )

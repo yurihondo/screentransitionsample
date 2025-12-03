@@ -1,46 +1,49 @@
 package com.yurihondo.screentransitionsample.navigation
 
+import androidx.navigation3.runtime.NavKey
+import com.yurihondo.applepie.navigation.ApplePie
+import com.yurihondo.bananabread.navigation.BananaBread
+import com.yurihondo.cupcake.navigation.Cupcake
+import com.yurihondo.eclair.navigation.Eclair
 import com.yurihondo.screentransitionsample.R
-import com.yurihondo.screentransitionsample.applepie.navigation.AppleGraphSpec
-import com.yurihondo.screentransitionsample.bananabread.navigation.BananaBreadGraphSpec
-import com.yurihondo.screentransitionsample.core.ui.navigation.GraphSpec
-import com.yurihondo.screentransitionsample.cupcake.navigation.CupcakeGraphSpec
-import com.yurihondo.screentransitionsample.donut.navigation.DonutGraphSpec
-import com.yurihondo.screentransitionsample.eclair.navigation.EclairGraphSpec
+import com.yurihondo.screentransitionsample.donut.navigation.Donut
 
 internal enum class TopLevelDestination(
     val titleTextId: Int,
-    val graph: () -> GraphSpec
+    val startRoute: NavKey,
 ) {
     UNKNOWN(
         titleTextId = -1,
-        graph = { throw UnsupportedOperationException("Unknown destination") },
+        startRoute = ApplePie, // Fallback, should never be used
     ),
     APPLE_PIE(
         titleTextId = R.string.destination_name_apple_pie,
-        graph = { AppleGraphSpec() },
+        startRoute = ApplePie,
     ),
-
     BANANA_BREAD(
         titleTextId = R.string.destination_name_banana_bread,
-        graph = { BananaBreadGraphSpec() },
+        startRoute = BananaBread,
     ),
     CUPCAKE(
         titleTextId = R.string.destination_name_cupcake,
-        graph = { CupcakeGraphSpec() },
+        startRoute = Cupcake,
     ),
     DONUT(
         titleTextId = R.string.destination_name_donut,
-        graph = { DonutGraphSpec() },
+        startRoute = Donut,
     ),
     ECLAIR(
         titleTextId = R.string.destination_name_eclair,
-        graph = { EclairGraphSpec() },
+        startRoute = Eclair,
     );
 
     companion object {
         fun getAvailableDestinations(): List<TopLevelDestination> {
             return TopLevelDestination.entries.filter { it != UNKNOWN }
+        }
+
+        fun fromNavKey(navKey: NavKey): TopLevelDestination {
+            return entries.find { it.startRoute == navKey } ?: UNKNOWN
         }
     }
 }

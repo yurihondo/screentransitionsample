@@ -1,19 +1,10 @@
 package com.yurihondo.bananabread.navigation
 
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
-// region Graph
 @Serializable
-object BananaBreadGraph
+data object BananaBread : NavKey
 
 @Serializable
-object BananaBreadMr1Graph
-// endregion Graph
-
-// region Destination
-@Serializable
-object BananaBreadDestination
-
-@Serializable
-object BananaBreadMr1Destination
-// endregion Destination
+data object BananaBreadMr1 : NavKey

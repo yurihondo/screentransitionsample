@@ -1,14 +1,7 @@
 package com.yurihondo.screentransitionsample.donut.navigation
 
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
-
-// region Graph
 @Serializable
-object DonutGraph
-// endregion Graph
-
-// region Destination
-@Serializable
-object DonutDestination
-// endregion Destination
+data object Donut : NavKey

@@ -1,13 +1,7 @@
 package com.yurihondo.cupcake.navigation
 
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
-// region Graph
 @Serializable
-object CupcakeGraph
-// endregion Graph
-
-// region Destination
-@Serializable
-object CupcakeDestination
-// endregion Destination
+data object Cupcake : NavKey

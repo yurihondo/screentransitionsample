@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import com.yurihondo.screentransitionsample.core.ui.App
 import com.yurihondo.screentransitionsample.core.ui.theme.ScreenTransitionSampleTheme
 import com.yurihondo.screentransitionsample.navigation.DeepLinksNavigator
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
             ScreenTransitionSampleTheme {

@@ -1,7 +1,11 @@
 package com.yurihondo.screentransitionsample.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import com.yurihondo.applepie.navigation.ApplePie
@@ -41,12 +45,20 @@ internal fun createMainEntryProvider(
     entry<ApplePieMr1> { key ->
         // Get result from ResultStore (state-based pattern from nav3-recipes)
         val editResult by resultStore.getResultState<String>(EDIT_RESULT_KEY)
-        val currentFrom = editResult ?: key.from
 
-        // Clear result after consumption
-        if (editResult != null) {
-            resultStore.removeResult(EDIT_RESULT_KEY)
+        // Remember the consumed result to avoid losing it on recomposition
+        var consumedResult by remember { mutableStateOf<String?>(null) }
+
+        // When we get a new result, consume it via LaunchedEffect (not during composition)
+        LaunchedEffect(editResult) {
+            if (editResult != null) {
+                consumedResult = editResult
+                // Clear from store after capturing
+                resultStore.removeResult(EDIT_RESULT_KEY)
+            }
         }
+
+        val currentFrom = consumedResult ?: key.from
 
         ApplePieMr1Route(
             from = currentFrom,

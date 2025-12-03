@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-internal fun BananaBreadMr1Route(
+fun BananaBreadMr1Route(
     modifier: Modifier = Modifier,
 ) {
     BananaBreadMr1Screen(

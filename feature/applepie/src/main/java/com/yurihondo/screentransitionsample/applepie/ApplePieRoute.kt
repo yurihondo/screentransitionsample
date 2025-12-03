@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun ApplePieRoute(
+fun ApplePieRoute(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {

@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun CupcakeRoute(
+fun CupcakeRoute(
     onNavigateToApplePieMr1: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {

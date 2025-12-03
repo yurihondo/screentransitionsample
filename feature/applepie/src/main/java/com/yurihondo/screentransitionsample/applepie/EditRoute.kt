@@ -28,7 +28,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun EditRoute(
+fun EditRoute(
     from: String,
     onDone: (String) -> Unit,
 ) {

@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun ApplePieMr1Route(
+fun ApplePieMr1Route(
     from: String,
     onClickMoveBananaBreadMr1: () -> Unit,
     onNavigateEdit: () -> Unit,

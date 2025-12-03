@@ -2,6 +2,7 @@ package com.yurihondo.screentransitionsample.navigation
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,15 +21,19 @@ internal fun MainNavDisplay(
     modifier: Modifier = Modifier,
     onHandleIntentForDeepLink: () -> Unit,
 ) {
+    val resultStore = rememberResultStore()
     val mainNavigator = rememberMainNavigator(appState)
-    val entryProvider = createMainEntryProvider(appState, mainNavigator)
 
-    NavDisplay(
-        backStack = appState.navigationState.currentBackStack(),
-        entryProvider = entryProvider,
-        modifier = modifier,
-        onBack = onBack,
-    )
+    CompositionLocalProvider(LocalResultStore provides resultStore) {
+        val entryProvider = createMainEntryProvider(appState, mainNavigator)
+
+        NavDisplay(
+            backStack = appState.navigationState.currentBackStack(),
+            entryProvider = entryProvider,
+            modifier = modifier,
+            onBack = onBack,
+        )
+    }
 
     // Have to set our own BackHandler after NavDisplay to override the BackHandler inside NavDisplay
     BackHandler(onBack = onBack)

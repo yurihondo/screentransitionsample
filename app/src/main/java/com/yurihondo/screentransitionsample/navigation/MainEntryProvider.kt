@@ -2,9 +2,6 @@ package com.yurihondo.screentransitionsample.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import com.yurihondo.applepie.navigation.ApplePie
@@ -25,13 +22,14 @@ import com.yurihondo.screentransitionsample.donut.DonutRoute
 import com.yurihondo.screentransitionsample.donut.navigation.Donut
 import com.yurihondo.screentransitionsample.eclair.EclairRoute
 
+private const val EDIT_RESULT_KEY = "edit_result"
+
 @Composable
 internal fun createMainEntryProvider(
     appState: AppState,
     navigator: MainNavigator,
 ) = entryProvider<NavKey> {
-    // State for result passing (Edit → ApplePieMr1)
-    var editResult by remember { mutableStateOf<String?>(null) }
+    val resultStore = LocalResultStore.current
 
     // ApplePie feature
     entry<ApplePie> {
@@ -41,10 +39,13 @@ internal fun createMainEntryProvider(
     }
 
     entry<ApplePieMr1> { key ->
+        // Get result from ResultStore (state-based pattern from nav3-recipes)
+        val editResult by resultStore.getResultState<String>(EDIT_RESULT_KEY)
         val currentFrom = editResult ?: key.from
+
         // Clear result after consumption
         if (editResult != null) {
-            editResult = null
+            resultStore.removeResult(EDIT_RESULT_KEY)
         }
 
         ApplePieMr1Route(
@@ -58,7 +59,8 @@ internal fun createMainEntryProvider(
         EditRoute(
             from = key.from,
             onDone = { result ->
-                editResult = result
+                // Set result to ResultStore before navigating back
+                resultStore.setResult(result, EDIT_RESULT_KEY)
                 appState.onBack {}
             }
         )
